@@ -1,0 +1,10 @@
+bin/
+build/
+Debug/
+*.exe
+*.com
+*.bcd
+*.log
+.alinainfo
+*.obj
+*.o

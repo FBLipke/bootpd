@@ -1,1 +1,23 @@
-{}
+{
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "debug.onTaskErrors": "showErrors",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/src"
+    ],
+    "C_Cpp.default.compilerPath": "${workspaceFolder}/src",
+    "git.openRepositoryInParentFolders": "always",
+    "makefile.configureOnOpen": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "git.autofetch": true,
+    "editor.formatOnSave": true,
+    "window.autoDetectColorScheme": true,
+    "editor.autoIndentOnPaste": true,
+    "editor.formatOnPaste": true,
+    "window.newWindowProfile": "Default",
+    "workbench.tree.indent": 32,
+    "workbench.startupEditor": "none",
+    "workbench.browser.enableChatTools": false,
+    "workbench.settings.alwaysShowAdvancedSettings": true,
+    "editor.tabSize": 4,
+}
