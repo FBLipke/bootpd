@@ -10,38 +10,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
 #include "../Bootpd.h"
 
 namespace bootp
 {
-	namespace Network
-	{
-		class Socket : public ISocket
-		{
-		public:
-			Socket(const _STRING &id, const _IPADDR &address, const _USHORT &port);
-			~Socket();
+    class IBootpd
+    {
+    public:
+        virtual _BOOL Init(const _INT32 &argc, const _BYTE *argv[]) = 0;
+        virtual _BOOL Start() = 0;
+        virtual void HeartBeat() = 0;
+        virtual void Close() = 0;
 
-			void ReceiveFrom(const Socket *socket);
-			void Init(const _INT32 &af) override;
-			void Start() override;
-			void Listen() override;
-			void HeartBeat() override;
-			void Close() override;
-
-		private:
-			_STRING id;
-			sockaddr_in _local;
-			sockaddr_in _remote;
-			_SOCKET _sock;
-			_USHORT port;
-			_INT32 socketType = 0;
-			_INT32 proto;
-			_IPADDR address = 0;
-			_BOOL bound;
-		};
-	}
+        // Statische SubSysteme - für alle Manager zugänglich
+        static std::map<_STRING, std::unique_ptr<IBootpd>> _subSystems;
+        std::function<void(const _STRING &server_id, const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)> HandleManager_Request;
+        std::function<void(const _STRING &server_id, const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)> HandleManager_Response;
+    };
 }

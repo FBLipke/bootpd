@@ -12,7 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-#include "../Bootpd.h"
+#include "../../Bootpd.h"
 
 namespace bootp
 {
@@ -26,9 +26,12 @@ namespace bootp
 			virtual void Listen() = 0;
 			virtual void HeartBeat() = 0;
 			virtual void Close() = 0;
-			std::function<void(const std::string& socketid, char* buffer, const size_t& bufferlen)> ServerDataReceived;
-		private:
+			std::function<void(const _STRING &server_id, const _STRING &socket_id,
+							   const _BYTE *buffer, const _SIZET &length)>
+				ServerDataReceived;
 
+		private:
+			_STRING id;
 		};
 	}
 }

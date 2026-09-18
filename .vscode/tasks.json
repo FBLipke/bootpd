@@ -1,46 +1,64 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
-            "type": "process",
-            "command": "/usr/bin/env",
-            "args": [
-                "CC=clang",
-                "CFLAGS=-g -Wall",
-                "make",
-                "${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "label": "makelldb: selected file"
+            "label": "CMake: Configure",
+            "type": "shell",
+            "command": "cd build && cmake ..",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Run CMake configure"
         },
         {
-            "type": "cppbuild",
-            "label": "C/C++: g++ Aktive Datei kompilieren",
-            "command": "/usr/bin/g++",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "label": "Build (Windows: Debug)",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.cmd",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "Vom Debugger generierte Aufgabe."
+            "problemMatcher": ["$msCompile"],
+            "detail": "Build bootpd using build.cmd (Windows Debug)"
+        },
+        {
+            "label": "Build (Windows: Release)",
+            "type": "shell",
+            "command": "${workspaceFolder}/build.cmd Release",
+            "group": "build",
+            "problemMatcher": ["$msCompile"],
+            "detail": "Build bootpd using build.cmd (Windows Release)"
+        },
+        {
+            "label": "Build (Linux: Debug)",
+            "type": "shell",
+            "command": "mkdir -p build && cd build && cmake .. && make",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Build bootpd on Linux (Debug)"
+        },
+        {
+            "label": "Build (Linux: Release)",
+            "type": "shell",
+            "command": "mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Build bootpd on Linux (Release)"
+        },
+        {
+            "label": "Clean (Windows)",
+            "type": "shell",
+            "command": "if exist build ( rd /s /q build )",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Clean build directory (Windows)"
+        },
+        {
+            "label": "Clean (Linux)",
+            "type": "shell",
+            "command": "rm -rf build",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Clean build directory (Linux)"
         }
-    ],
-    "version": "2.0.0"
+    ]
 }

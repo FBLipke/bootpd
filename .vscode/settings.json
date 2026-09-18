@@ -14,10 +14,11 @@
     "window.autoDetectColorScheme": true,
     "editor.autoIndentOnPaste": true,
     "editor.formatOnPaste": true,
-    "window.newWindowProfile": "Default",
     "workbench.tree.indent": 32,
     "workbench.startupEditor": "none",
     "workbench.browser.enableChatTools": false,
     "workbench.settings.alwaysShowAdvancedSettings": true,
     "editor.tabSize": 4,
+    "workbench.settings.showAISearchToggle": false,
+    "cmake.sourceDirectory": "C:/Users/LipkeGu/source/repos/bootpd"
 }

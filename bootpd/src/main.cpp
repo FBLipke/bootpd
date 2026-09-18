@@ -17,7 +17,7 @@ using namespace bootp;
 
 void _heartbeat(IBootpd* _instance)
 {
-	std::string str = std::string("");
+	auto str = std::string("");
 	while (str != "!exit")
 	{
 		std::this_thread::sleep_for(
@@ -33,10 +33,6 @@ void _heartbeat(IBootpd* _instance)
 int main(const int argc, const char* argv[])
 {
 	auto _bootpd = std::make_shared<bootp::bootpd>();
-	printf("Bootpd 0.1\n");
-
-	printf("%s\n", Functions::GenerateUUID().c_str());
-
 
 	if (!_bootpd.get()->Init(argc, argv))
 		return 1;

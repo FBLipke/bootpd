@@ -18,17 +18,19 @@ namespace bootp
 {
 	namespace Network
 	{
-		class Server :
-			public IServer
+		class Server : public IServer
 		{
 		public:
-			// Geerbt über IServer
+			Server(const _STRING &id);
+			~Server();
 			void Init();
 			void Start();
 			void Listen();
 			void HeartBeat();
 			void Close();
+
 		private:
+			_STRING id;
 			std::vector<std::unique_ptr<bootp::Network::ISocket>> sockets;
 		};
 	}

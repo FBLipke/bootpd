@@ -21,12 +21,12 @@ namespace bootp
 		class ISocket
 		{
 		public:
-			virtual void Init() = 0;
+			virtual void Init(const uint16_t &af, const IPPROTO &proto) = 0;
 			virtual void Start() = 0;
 			virtual void Listen() = 0;
 			virtual void HeartBeat() = 0;
 			virtual void Close() = 0;
-			std::function<void(char* buffer, const size_t& bufferlen)> SocketDataReceived;
+			std::function<void(const std::string &socketid, char *buffer, const size_t &bufferlen)> SocketDataReceived;
 		};
 	}
 }

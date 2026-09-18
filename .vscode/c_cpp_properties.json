@@ -1,0 +1,24 @@
+{
+	"configurations": [
+		{
+			"name": "X64",
+			"includePath": [
+				"${default}",
+				"${workspaceFolder}/bootpd/src",
+				"${workspaceFolder}/thirdparty",
+				"${workspaceFolder}/plugins/*/src"
+			],
+			"defines": [
+				"_DEBUG",
+				"UNICODE",
+				"_UNICODE",
+				"WIN32"
+			],
+			"windowsSdkVersion": "10.0.26100.0",
+			"cStandard": "c23",
+			"cppStandard": "c++20",
+			"intelliSenseMode": "windows-msvc-x64"
+		}
+	],
+	"version": 4
+}

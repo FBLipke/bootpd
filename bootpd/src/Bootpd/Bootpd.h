@@ -12,46 +12,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-#include <memory>
-#include <vector>
-#include <map>
-#include <functional>
-#include <chrono>
-#include <thread>
-#include <string>
-
-#ifdef _WIN32
-#pragma comment(lib, "Ws2_32.lib")
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-typedef int SOCKET_T;
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <errno.h>
-typedef int SOCKET_T;
-#define INVALID_SOCKET (-1)
-#define SOCKET_ERROR (-1)
-#define SOCKADDR_IN sockaddr_in
-#endif
-
-class IBootpd
-{
-public:
-	virtual bool Init(const int argc, const char* argv[]) = 0;
-	virtual bool Start() = 0;
-	virtual void HeartBeat() = 0;
-	virtual void Close() = 0;
-};
+#include "Common/Environment.h"
 #include "Common/Functions.h"
-#include "Network/ISocket.h"
+#include "Interface/IBootpd.h"
+#include "Network/Interface/ISocket.h"
 #include "Network/Socket.h"
-#include "Network/IServer.h"
+#include "Network/Interface/IServer.h"
 #include "Network/Server.h"
 #include "Network/ServerManager.h"
+#include "Services/ServiceManager.h"
 
 namespace bootp
 {
@@ -61,14 +30,16 @@ namespace bootp
 		bootpd();
 		~bootpd();
 
-		bool Init(const int argc, const char* argv[]) override;
+		void Add_Subsys(const _STRING &str, std::unique_ptr<IBootpd> subsys);
+
+		IBootpd *Get_SubSystem(const _STRING &id);
+
+		bool Init(const _INT32 &argc, const _BYTE *argv[]) override;
 
 		bool Start() override;
 
 		void HeartBeat() override;
 
 		void Close() override;
-	private:
-		std::vector<std::unique_ptr<IBootpd>> _subSystems;
 	};
 }

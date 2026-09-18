@@ -12,23 +12,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-#include "../Bootpd.h"
+#include "../../Bootpd.h"
 
 namespace bootp
 {
 	namespace Network
 	{
-		class IServer
+		class ISocket
 		{
 		public:
-			virtual void Init() = 0;
+			virtual void Init(const _INT32 &af) = 0;
 			virtual void Start() = 0;
 			virtual void Listen() = 0;
 			virtual void HeartBeat() = 0;
 			virtual void Close() = 0;
-			std::function<void(const std::string& socketid, char* buffer, const size_t& bufferlen)> ServerDataReceived;
-		private:
+			std::function<void(const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)> SocketDataReceived;
 
+		private:
+			_STRING id;
 		};
 	}
 }

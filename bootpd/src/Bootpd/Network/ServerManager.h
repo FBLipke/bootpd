@@ -13,33 +13,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 #include "../Bootpd.h"
-
-
-
 namespace bootp
 {
-	class ServerManager : public IBootpd
+
+	namespace Network
 	{
-	public:
-		ServerManager();
-		~ServerManager();
+		class ServerManager : public IBootpd
+		{
+		public:
+			ServerManager();
+			~ServerManager();
 
 #ifdef _WIN32
-		bool Init_Winsock(int major, int minor);
-		bool Close_Winsock();
+			_BOOL Init_Winsock(_INT32 major, _INT32 minor);
+			_BOOL Close_Winsock();
 #endif
 
-		bool Init(const int argc, const char* argv[]);
+			_BOOL Init(const _INT32 &argc, const _BYTE *argv[]);
 
-		bool Start();
+			_BOOL Start();
 
-		void HeartBeat();
+			void HeartBeat();
 
-		void Close();
-	private:
+			void Close();
+
+			std::function<void(const _STRING &server_id, const _STRING &socket_id, const _BYTE *, const _SIZET &)> HandleManager_Request;
+			std::function<void(const _STRING &server_id, const _STRING &socket_id, const _BYTE *, const _SIZET &)> HandleManager_Response;
+
+		private:
 #ifdef WIN32
-		WSADATA wsa;
+			WSADATA wsa;
 #endif
-		std::vector<std::unique_ptr<bootp::Network::IServer>> servers;
-	};
+			std::map<const _STRING, std::unique_ptr<bootp::Network::IServer>> servers;
+		};
+	}
 }
