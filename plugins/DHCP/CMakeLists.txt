@@ -13,7 +13,10 @@ target_include_directories(DHCPService PUBLIC
 )
 
 # Link against PacketLib (shared library for Packet class)
-target_link_libraries(DHCPService PRIVATE PacketLib)
+# Use full path to the .lib file
+target_link_libraries(DHCPService PRIVATE 
+    ${CMAKE_BINARY_DIR}/plugins/PacketLib.lib
+)
 
 # Ensure PacketLib is built before DHCPService links
 add_dependencies(DHCPService PacketLib)
