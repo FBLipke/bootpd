@@ -11,6 +11,7 @@
 /* Extern ASM Funktionen (mit underscore!) */
 extern void _print_char(char c);
 extern void _print_str(const char *s);
+extern void _print_newline(void);
 extern uint16_t _pxe_call(uint16_t func, uint16_t bx, uint16_t cx, uint16_t dx, uint16_t di, uint16_t si);
 extern void _boot_jump(void);
 
@@ -107,7 +108,7 @@ static int tftp_open(uint32_t server_ip, const char *filename) {
 }
 
 /* TFTP Read - using tftp_read_t from tftp.h */
-static int tftp_read(int socket, uint8_t *buffer, uint16_t maxlen) {
+static int nbp_tftp_read(int socket, uint8_t *buffer, uint16_t maxlen) {
     tftp_read_t *read = (tftp_read_t*)buffer;
     
     read->BufferLen = maxlen - sizeof(tftp_read_t);
@@ -161,7 +162,7 @@ static void tftp_boot(uint32_t server_ip, const char *filename) {
     _print_newline();
     
     while (total < 1024 * 1024) {  /* Max 1MB */
-        bytes = tftp_read(socket, load_addr + total, 1400);
+        bytes = nbp_tftp_read(socket, load_addr + total, 1400);
         if (bytes < 0) {
             _print_str("TFTP: Read error!");
             _print_newline();
