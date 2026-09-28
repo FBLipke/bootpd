@@ -191,13 +191,13 @@ int tftp_pxe_read(int socket, void *buffer, uint16_t maxlen, tftp_read_t *read_s
 }
 
 /* TFTP Close using PXE ROM */
-void tftp_pxe_close(uint16_t socket) {
-    tftp_close_t close;
+void tftp_pxe_close(int socket) {
+    tftp_close_t close_pxe;
     
-    close.Socket = socket;
+    close_pxe.Socket = (uint16_t)socket;
     
-    uint16_t seg = ((uint32_t)&close >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)&close & 0xFFFF;
+    uint16_t seg = ((uint32_t)&close_pxe >> 16) & 0xFFFF;
+    uint16_t off = (uint32_t)&close_pxe & 0xFFFF;
     
     _pxe_call(PXENV_UNDI_TFTP_CLOSE, 0, 0, 0, seg, off);
 }
@@ -208,9 +208,11 @@ int tftp_read_pxe(uint32_t server_ip, const char *filename, void *buffer, uint32
     int socket;
     int total = 0;
     int bytes;
+    tftp_open_t open_struct;
+    tftp_read_t read_struct;
     
     /* Open TFTP connection */
-    socket = tftp_pxe_open(server_ip, filename);
+    socket = tftp_pxe_open(server_ip, filename, &open_struct);
     if (socket < 0) {
         return -1;
     }
@@ -220,7 +222,7 @@ int tftp_read_pxe(uint32_t server_ip, const char *filename, void *buffer, uint32
         int chunk = size - total;
         if (chunk > 1400) chunk = 1400;  /* Max packet size */
         
-        bytes = tftp_pxe_read(socket, buf + total, chunk + sizeof(tftp_read_t));
+        bytes = tftp_pxe_read(socket, buf + total, chunk + sizeof(tftp_read_t), &read_struct);
         if (bytes < 0) {
             tftp_pxe_close(socket);
             return -1;
