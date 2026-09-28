@@ -50,12 +50,10 @@ target_include_directories(bootpd PRIVATE
     ${CMAKE_SOURCE_DIR}/bootpd/src
     ${CMAKE_SOURCE_DIR}/thirdparty
 )
-target_link_libraries(bootpd PRIVATE PacketLib)
-
 if(WIN32)
-    target_link_libraries(bootpd sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib)
+    target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib)
 else()
-    target_link_libraries(bootpd sqlite3_lib pthread)
+    target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib pthread)
 endif()
 
 # Build plugins as subdirectory
