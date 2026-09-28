@@ -24,6 +24,11 @@ target_include_directories(PacketLib PUBLIC
 )
 if(WIN32)
     target_compile_definitions(PacketLib PRIVATE PACKETLib_EXPORTS)
+    # Place .lib next to plugins so they can find it
+    set_target_properties(PacketLib PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
+    )
 endif()
 
 # ===== Source Files =====
