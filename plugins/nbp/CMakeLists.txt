@@ -17,9 +17,9 @@ file(GLOB NBP_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.S
 )
 
-# Stdlib sources
+# Stdlib sources (moved to plugins/stdlib/)
 file(GLOB NBP_STDLIB_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/stdlib/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../stdlib/*.c
 )
 
 # Combine all sources
