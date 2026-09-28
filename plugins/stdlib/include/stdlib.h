@@ -6,12 +6,25 @@
 #ifndef _STDLIB_H
 #define _STDLIB_H
 
-/* Basic Types */
+/* Basic Types - use standard definitions when available */
+#ifndef uint8_t
 typedef unsigned char      uint8_t;
+#endif
+#ifndef uint16_t
 typedef unsigned short     uint16_t;
+#endif
+#ifndef uint32_t
 typedef unsigned int       uint32_t;
+#endif
+#ifndef uintptr_t
 typedef unsigned long      uintptr_t;
+#endif
+/* size_t is provided by MSVC/compiler - don't redefine */
+#ifndef _MSC_VER
+#ifndef size_t
 typedef unsigned long     size_t;
+#endif
+#endif
 
 #define NULL ((void*)0)
 

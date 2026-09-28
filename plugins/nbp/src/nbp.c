@@ -129,12 +129,12 @@ static void tftp_close(int socket) {
     struct {
         uint16_t Status;
         uint16_t Socket;
-    } __attribute__((packed)) close;
+    } __attribute__((packed)) close_pxe;
     
-    close.Socket = socket;
+    close_pxe.Socket = socket;
     
-    uint16_t seg = ((uint32_t)&close >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)&close & 0xFFFF;
+    uint16_t seg = ((uint32_t)&close_pxe >> 16) & 0xFFFF;
+    uint16_t off = (uint32_t)&close_pxe & 0xFFFF;
     
     _pxe_call(PXENV_UNDI_TFTP_CLOSE, 0, 0, 0, seg, off);
 }
@@ -465,5 +465,11 @@ void main(void) {
     _print_newline();
     _print_str("Halted.");
     _print_newline();
-    for (;;) __asm__ __volatile__ ("hlt");
+    for (;;) {
+#ifdef _MSC_VER
+        __asm { hlt }
+#else
+        __asm__ __volatile__("hlt");
+#endif
+    }
 }

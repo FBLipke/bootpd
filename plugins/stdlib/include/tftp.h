@@ -31,6 +31,8 @@
 #define TFTP_MAX_BLKSIZE 1428  /* Max for Ethernet + IP + UDP */
 
 /* TFTP Transfer Info */
+#ifndef tftp_transfer_defined
+#define tftp_transfer_defined
 struct tftp_transfer {
     uint32_t server_ip;
     uint16_t server_port;
@@ -42,6 +44,7 @@ struct tftp_transfer {
     uint8_t  retries;
     uint8_t  state;
 };
+#endif
 
 /* TFTP States */
 #define TFTP_STATE_IDLE      0
@@ -51,13 +54,16 @@ struct tftp_transfer {
 #define TFTP_STATE_ERROR     4
 
 /* TFTP Functions */
+#ifndef tftp_read_defined
+#define tftp_read_defined
 int tftp_read(uint32_t server_ip, const char *filename, void *buffer, uint32_t size);
 int tftp_read_with_options(uint32_t server_ip, const char *filename, void *buffer, uint32_t size, uint16_t blksize);
 const char *tftp_error_str(int errcode);
-
-#endif /* _TFTP_H */
+#endif
 
 /* Extended TFTP Structures for PXE */
+#ifndef tftp_open_t_defined
+#define tftp_open_t_defined
 typedef struct {
     uint16_t Status;
     uint32_t ServerIP;
@@ -76,13 +82,17 @@ typedef struct {
     uint8_t  Filename[256];
     uint8_t  Mode[32];
 } tftp_open_t;
+#endif
 
+#ifndef tftp_read_t_defined
+#define tftp_read_t_defined
 typedef struct {
     uint16_t Status;
     uint16_t PacketLen;
     uint16_t BufferLen;
     uint16_t Buffer[1];
 } tftp_read_t;
+#endif
 
 /* PXE-specific TFTP macros */
 #define TFTP_PXE_OPEN(server_ip, filename, open_struct) \
@@ -95,3 +105,5 @@ typedef struct {
 int tftp_pxe_open(uint32_t server_ip, const char *filename, tftp_open_t *open_struct);
 int tftp_pxe_read(int socket, void *buffer, uint16_t maxlen, tftp_read_t *read_struct);
 void tftp_pxe_close(int socket);
+
+#endif /* _TFTP_H */
