@@ -5,6 +5,8 @@
  */
 
 #include "stdlib/include/stdlib.h"
+#include "stdlib/include/pxe.h"
+#include "stdlib/include/dhcp.h"
 
 /* Extern ASM Funktionen (mit underscore!) */
 extern void _print_char(char c);
@@ -12,81 +14,12 @@ extern void _print_str(const char *s);
 extern uint16_t _pxe_call(uint16_t func, uint16_t bx, uint16_t cx, uint16_t dx, uint16_t di, uint16_t si);
 extern void _boot_jump(void);
 
-/* Konstanten */
-#define PXENV_GET_CACHED_INFO  0x0070
-#define PXENV_UNDI_TFTP_OPEN   0x0020
-#define PXENV_UNDI_TFTP_READ   0x0021
-#define PXENV_UNDI_TFTP_CLOSE  0x0022
-#define SIGNATURE_PXENV        0x4E50
-#define SIGNATURE_NBP          0x21505845
-#define BOOT_INFO_SEG          0x0800
-#define BOOT_LOAD_SEG          0x1000
-#define DHCP_OPT_END           255
-#define DHCP_OPT_PAD           0
-#define DHCP_OPT_VENDOR        43
-#define DHCP_OPT_VCI           60
-#define DHCP_OPT_SERVER        54
-#define DHCP_OPT_FILE          67
-#define DHCP_OPT_ROOT          17
-#define RBCP_BOOT_SERVER       8
-#define RBCP_BOOT_ITEM         71
-#define RBCP_CREDENTIALS       12
-#define WDS_NEXT_ACTION        2
-#define WDS_REQUEST_ID         5
-#define WDS_MESSAGE            6
-#define WDS_APPROVAL           1
-#define WDS_REFERRAL           3
-#define WDS_ABORT              5
-
-/* TFTP Open structure */
-typedef struct {
-    uint16_t Status;
-    uint32_t ServerIP;
-    uint32_t GatewayIP;
-    uint8_t  MCastAddr[16];
-    uint8_t  ARPServerIP[4];
-    uint8_t  SubnetMask[4];
-    uint8_t  DNS[4];
-    uint8_t  DNS2[4];
-    uint8_t  Lease[4];
-    uint8_t  LeaseLen;
-    uint8_t  VendorClass[64];
-    uint8_t  VendorClassLen;
-    uint8_t  ClientUUID[16];
-    uint16_t Socket;
-    uint8_t  Filename[256];
-    uint8_t  Mode[32];
-} __attribute__((packed)) tftp_open_t;
-
-/* TFTP Read structure */
-typedef struct {
-    uint16_t Status;
-    uint16_t PacketLen;
-    uint16_t BufferLen;
-    uint16_t Buffer[1];
-} __attribute__((packed)) tftp_read_t;
-
-/* Boot Info Struktur */
-typedef struct {
-    uint16_t signature;
-    uint16_t length;
-    uint32_t boot_server_ip;
-    uint16_t boot_item_type;
-    uint16_t boot_item_layer;
-    uint32_t cred_types;
-    uint8_t  wds_next_action;
-    uint32_t wds_request_id;
-    uint8_t  vci[128];
-    uint8_t  bootfile[128];
-    uint8_t  root_path[256];
-    uint8_t  reserved[128];
-} boot_info_t;
-
-static boot_info_t g_boot_info;
+/* Globals - using pxe_boot_info_t from pxe.h */
+static pxe_boot_info_t g_boot_info;
 static uint8_t g_wds_message[128];
 static uint8_t g_packet_buf[1024];
 
-/* PXE Detection */
+/* PXE Detection - using PXE signatures from pxe.h */
 static int detect_pxe(void) {
     _print_str("PXE Detection... ");
     uint32_t sig = *(uint32_t*)0xFF0E0000;
@@ -122,7 +55,7 @@ static int get_cached_packet(void) {
     return -1;
 }
 
-/* TFTP Open */
+/* TFTP Open - using tftp_open_t from tftp.h */
 static int tftp_open(uint32_t server_ip, const char *filename) {
     tftp_open_t open;
     int i;
@@ -133,7 +66,7 @@ static int tftp_open(uint32_t server_ip, const char *filename) {
     print_ip(server_ip);
     _print_newline();
     
-    /* Clear structure - aus stdlib */
+    /* Clear structure - using memset from stdlib */
     memset(&open, 0, sizeof(tftp_open_t));
     
     open.ServerIP = server_ip;
@@ -173,7 +106,7 @@ static int tftp_open(uint32_t server_ip, const char *filename) {
     return open.Socket;
 }
 
-/* TFTP Read */
+/* TFTP Read - using tftp_read_t from tftp.h */
 static int tftp_read(int socket, uint8_t *buffer, uint16_t maxlen) {
     tftp_read_t *read = (tftp_read_t*)buffer;
     
@@ -385,7 +318,7 @@ static void parse_dhcp_options(void) {
     }
     
     /* Option 54 - Server Identifier */
-    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_SERVER);
+    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_SERVER_IDENTIFIER);
     if (opt) {
         _print_str("  Option 54 (Server): ");
         if (opt[-1] >= 4) {
@@ -396,7 +329,7 @@ static void parse_dhcp_options(void) {
     }
     
     /* Option 67 - Bootfile Name */
-    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_FILE);
+    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_BOOTFILE);
     if (opt) {
         len = opt[-1];
         _print_str("  Option 67 (Bootfile): ");
@@ -411,7 +344,7 @@ static void parse_dhcp_options(void) {
     }
     
     /* Option 17 - Root Path */
-    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_ROOT);
+    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_ROOT_PATH);
     if (opt) {
         len = opt[-1];
         _print_str("  Option 17 (Root Path): ");
@@ -426,7 +359,7 @@ static void parse_dhcp_options(void) {
     }
     
     /* Option 43 - Vendor Specific */
-    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_VENDOR);
+    opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_VENDOROPTS);
     if (opt) {
         len = *opt;
         _print_str("  Option 43 (Vendor), len=");
@@ -438,14 +371,14 @@ static void parse_dhcp_options(void) {
 
 /* Main */
 void main(void) {
-    memset(&g_boot_info, 0, sizeof(boot_info_t));
-    g_boot_info.signature = 0x4942;
-    g_boot_info.length = sizeof(boot_info_t);
+    memset(&g_boot_info, 0, sizeof(pxe_boot_info_t));
+    g_boot_info.signature = PXE_BOOT_INFO_SIGNATURE;
+    g_boot_info.length = sizeof(pxe_boot_info_t);
     
     _print_newline();
     _print_str("========================================");
     _print_newline();
-    _print_str("FBLipke PXE NBP v13 (C+ASM+TFTP)");
+    _print_str("FBLipke PXE NBP v14 (stdlib)");
     _print_newline();
     _print_str("========================================");
     _print_newline();
@@ -487,7 +420,7 @@ void main(void) {
     /* Use server IP from Option 43 or default */
     if (g_boot_info.boot_server_ip == 0) {
         /* Try to get from Option 54 (Server Identifier) */
-        uint8_t *opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_SERVER);
+        uint8_t *opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_SERVER_IDENTIFIER);
         if (opt && opt[-1] >= 4) {
             g_boot_info.boot_server_ip = *(uint32_t*)opt;
         } else {
