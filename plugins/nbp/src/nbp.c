@@ -126,10 +126,12 @@ static int tftp_read(int socket, uint8_t *buffer, uint16_t maxlen) {
 
 /* TFTP Close */
 static void tftp_close(int socket) {
+#pragma pack(push, 1)
     struct {
         uint16_t Status;
         uint16_t Socket;
-    } __attribute__((packed)) close_pxe;
+    } close_pxe;
+#pragma pack(pop)
     
     close_pxe.Socket = socket;
     
