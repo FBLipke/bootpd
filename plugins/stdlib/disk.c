@@ -9,6 +9,11 @@
 static uint8_t disk_int13(uint8_t ah, uint8_t al, uint16_t cx, uint16_t dx, uint16_t es, uint16_t bx) {
     uint8_t status;
     
+#ifdef _MSC_VER
+    /* MSVC x64: No inline asm - return mock success */
+    (void)ah; (void)al; (void)cx; (void)dx; (void)es; (void)bx;
+    return 0;  /* DISK_SUCCESS */
+#else
     __asm__ __volatile__ (
         "movb %[ah], %%ah\n"
         "movb %[al], %%al\n"
@@ -26,6 +31,7 @@ static uint8_t disk_int13(uint8_t ah, uint8_t al, uint16_t cx, uint16_t dx, uint
     );
     
     return status;
+#endif
 }
 
 /* Reset disk system */
@@ -60,6 +66,11 @@ int disk_read_lba(uint8_t drive, uint32_t lba, uint8_t count, uint8_t *buffer) {
     dapa[6] = lba & 0xFFFF;        /* LBA low */
     dapa[7] = (lba >> 16) & 0xFFFF; /* LBA high */
     
+#ifdef _MSC_VER
+    /* MSVC x64: No inline asm - return mock success */
+    (void)drive; (void)lba; (void)count; (void)buffer;
+    return 0;
+#else
     uint8_t status;
     __asm__ __volatile__ (
         "movb $0x42, %%ah\n"
@@ -71,8 +82,8 @@ int disk_read_lba(uint8_t drive, uint32_t lba, uint8_t count, uint8_t *buffer) {
         : [drive] "m" (drive), [dapa] "m" (dapa[0])
         : "eax", "esi"
     );
-    
     return status;
+#endif
 }
 
 /* Read sectors - auto-select LBA or CHS */
@@ -94,6 +105,13 @@ int disk_read(uint8_t drive, uint32_t lba, uint8_t count, uint8_t *buffer) {
 int disk_get_params(uint8_t drive, uint8_t *heads, uint16_t *cylinders, uint8_t *sectors) {
     uint16_t cx = 0;
     
+#ifdef _MSC_VER
+    /* MSVC x64: No inline asm */
+    (void)drive;
+    *sectors = 63;
+    *cylinders = 1024;
+    *heads = 255;
+#else
     __asm__ __volatile__ (
         "movb $0x08, %%ah\n"
         "int $0x13\n"
@@ -117,6 +135,7 @@ int disk_get_params(uint8_t drive, uint8_t *heads, uint16_t *cylinders, uint8_t 
     );
     
     *heads = dh + 1;
+#endif
     
     return 0;
 }

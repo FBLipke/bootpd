@@ -4,9 +4,9 @@
  * Mit TFTP Download!
  */
 
-#include "stdlib/include/stdlib.h"
-#include "stdlib/include/pxe.h"
-#include "stdlib/include/dhcp.h"
+#include "stdlib.h"
+#include "pxe.h"
+#include "dhcp.h"
 
 /* Extern ASM Funktionen (mit underscore!) */
 extern void _print_char(char c);

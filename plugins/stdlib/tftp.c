@@ -13,39 +13,11 @@
 #define PXENV_UNDI_TFTP_READ_FILE      0x0021
 #define PXENV_UNDI_TFTP_CLOSE          0x0022
 
-/* PXE TFTP Open structure */
-typedef struct {
-    uint16_t Status;
-    uint32_t ServerIP;
-    uint32_t GatewayIP;
-    uint8_t  MCastAddr[16];
-    uint8_t  ARPServerIP[4];
-    uint8_t  SubnetMask[4];
-    uint8_t  DNS[4];
-    uint8_t  DNS2[4];
-    uint8_t  Lease[4];
-    uint8_t  LeaseLen;
-    uint8_t  VendorClass[64];
-    uint8_t  VendorClassLen;
-    uint8_t  ClientUUID[16];
-    uint16_t Socket;
-    uint8_t  Filename[256];
-    uint8_t  Mode[32];
-} __attribute__((packed)) tftp_open_t;
-
-/* PXE TFTP Read structure */
-typedef struct {
-    uint16_t Status;
-    uint16_t PacketLen;
-    uint16_t BufferLen;
-    uint16_t Buffer[1];  /* Variable length */
-} __attribute__((packed)) tftp_read_t;
-
-/* PXE TFTP Close structure */
+/* PXE TFTP Close structure (local, not in tftp.h) */
 typedef struct {
     uint16_t Status;
     uint16_t Socket;
-} __attribute__((packed)) tftp_close_t;
+} tftp_close_t;
 
 /* External PXE call function (from startup.asm) */
 extern uint16_t _pxe_call(uint16_t func, uint16_t ax, uint16_t cx, 
