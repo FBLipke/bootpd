@@ -12,8 +12,9 @@ target_include_directories(DHCPService PUBLIC
     ${CMAKE_SOURCE_DIR}/thirdparty
 )
 
-# Packet class is compiled directly into this plugin
-# (Packet.cpp was copied to plugins/DHCP/src/Bootpd/Network/Packet/)
+# Link against PacketLib (static library - .lib is in archive output dir)
+target_link_libraries(DHCPService PRIVATE PacketLib)
+add_dependencies(DHCPService PacketLib)
 
 if(WIN32)
     target_link_libraries(DHCPService PRIVATE Ws2_32.lib)

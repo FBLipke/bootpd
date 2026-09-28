@@ -14,22 +14,14 @@ set(SQLITE_SRC_DIR ${CMAKE_SOURCE_DIR}/thirdparty/sqlite3)
 add_library(sqlite3_lib STATIC ${SQLITE_SRC_DIR}/sqlite3.c)
 set_source_files_properties(${SQLITE_SRC_DIR}/sqlite3.c PROPERTIES LANGUAGE C)
 
-# ===== Packet Shared Library (used by main + plugins) =====
+# ===== Packet Static Library (used by main + plugins) =====
 set(PACKET_SOURCES
     ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Packet.cpp
 )
-add_library(PacketLib SHARED ${PACKET_SOURCES})
+add_library(PacketLib STATIC ${PACKET_SOURCES})
 target_include_directories(PacketLib PUBLIC 
     ${CMAKE_SOURCE_DIR}/bootpd/src
 )
-if(WIN32)
-    target_compile_definitions(PacketLib PRIVATE PACKETLib_EXPORTS)
-    # Place .lib next to plugins so they can find it
-    set_target_properties(PacketLib PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins
-    )
-endif()
 
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
