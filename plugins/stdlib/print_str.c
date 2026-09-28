@@ -10,11 +10,6 @@ void print_str(const char *s) { _print_str(s); }
 
 void print_newline(void) { _print_str("\r\n"); }
 
-/* Wrapper for NBP - underscore version */
-void _print_newline(void) {
-    print_newline();
-}
-
 /* NBP compatibility wrappers */
 void _print_char(char c) { print_char(c); }
 void _print_str(const char *s) { print_str(s); }
