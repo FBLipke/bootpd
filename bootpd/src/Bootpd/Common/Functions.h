@@ -18,7 +18,7 @@ class Functions
 {
 public:
 	static _STRING GenerateUUID();
-	static void __memcpy(void *dst, const void *src, _SIZET length);
+	static void __memcpy(void *dst, const void *src, const _SIZET &length);
 
 	static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
 

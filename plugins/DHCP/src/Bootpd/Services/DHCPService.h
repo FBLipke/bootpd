@@ -3,13 +3,6 @@
 // IPlugin basis class from CMake include dirs: ${CMAKE_SOURCE_DIR}/bootpd/src
 #include <Bootpd/Services/ServiceManager.h>
 
-#ifndef _WIN32
-#include <arpa/inet.h>
-#else
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#endif
-
 namespace bootp::Plugins
 {
 
@@ -31,9 +24,8 @@ namespace bootp::Plugins
 
         void configure(const std::string &key, const std::string &value) override;
 
-        void Handle_Service_Request();
+        void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet);
 
     private:
-
     };
 }

@@ -36,10 +36,12 @@ typedef unsigned int _UINT;
 typedef int _INT32;
 typedef long _LONG;
 typedef unsigned long long _ULONGLONG;
-typedef char _BYTE;
+typedef uint8_t _BYTE;
 typedef std::string _STRING;
 typedef bool _BOOL;
 typedef std::thread _THREAD;
+
+#define __MEMSET(o, l) std::memset(0, NULL, l);
 
 #ifdef __GNUC__
 #include "environment_linux.h"

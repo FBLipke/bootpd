@@ -2,7 +2,7 @@
  * Network Utilities - Byte Order & CRC
  */
 
-#include <stdlib.h>
+#include "include/stdlib.h"
 
 /* CRC16 Table - CCITT polynomial 0x1021 */
 static const uint16_t crc16_table[256] = {
@@ -37,17 +37,18 @@ static const uint16_t crc16_table[256] = {
     0xFD2E, 0xED0F, 0xDD6C, 0xCD4D, 0xBDAA, 0xAD8B, 0x9DE8, 0x8DC9,
     0x7C26, 0x6C07, 0x5C64, 0x4C45, 0x3CA2, 0x2C83, 0x1CE0, 0x0CC1,
     0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
-    0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
-};
+    0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0};
 
 /* Host to Network Byte Order (Big Endian) */
-uint16_t htons(uint16_t x) {
-    uint8_t *p = (uint8_t*)&x;
+uint16_t htons(uint16_t x)
+{
+    uint8_t *p = (uint8_t *)&x;
     return ((uint16_t)p[0] << 8) | p[1];
 }
 
-uint32_t htonl(uint32_t x) {
-    uint8_t *p = (uint8_t*)&x;
+uint32_t htonl(uint32_t x)
+{
+    uint8_t *p = (uint8_t *)&x;
     return ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16) |
            ((uint32_t)p[2] << 8) | p[3];
 }
@@ -57,9 +58,11 @@ uint16_t ntohs(uint16_t x) { return htons(x); }
 uint32_t ntohl(uint32_t x) { return htonl(x); }
 
 /* CRC16 - CCITT polynomial */
-uint16_t crc16(const uint8_t *data, size_t len) {
+uint16_t crc16(const uint8_t *data, size_t len)
+{
     uint16_t crc = 0xFFFF;
-    while (len--) {
+    while (len--)
+    {
         crc = (crc << 8) ^ crc16_table[((crc >> 8) ^ *data++) & 0xFF];
     }
     return crc;
@@ -98,39 +101,49 @@ static const uint32_t crc32_table[256] = {
     0x5005E53C, 0x2702D5AA, 0xBE0B8410, 0xC90CB486,
     0x57681725, 0x206F27B3, 0xB9667609, 0xCE61469F,
     0x5EDE6D0E, 0x29D95D98, 0xB0D00C22, 0xC7D73CB4,
-    0x59B39F17, 0x2EB4AF81, 0xB7BDFE3B, 0xC0BACEAD
-};
+    0x59B39F17, 0x2EB4AF81, 0xB7BDFE3B, 0xC0BACEAD};
 
-uint32_t crc32(const uint8_t *data, size_t len) {
+uint32_t crc32(const uint8_t *data, size_t len)
+{
     uint32_t crc = 0xFFFFFFFF;
-    while (len--) {
+    while (len--)
+    {
         crc = crc32_table[(crc ^ *data++) & 0xFF] ^ (crc >> 8);
     }
     return crc ^ 0xFFFFFFFF;
 }
 
 /* Parse IP from string "192.168.1.1" */
-int parse_ip(const char *str, uint32_t *out) {
-    if (!str || !out) return -1;
-    
+int parse_ip(const char *str, uint32_t *out)
+{
+    if (!str || !out)
+        return -1;
+
     uint32_t ip = 0;
     int octet = 0;
     int val = 0;
-    
-    while (*str && octet < 4) {
-        if (*str >= '0' && *str <= '9') {
+
+    while (*str && octet < 4)
+    {
+        if (*str >= '0' && *str <= '9')
+        {
             val = val * 10 + (*str - '0');
-        } else if (*str == '.') {
+        }
+        else if (*str == '.')
+        {
             ip = (ip << 8) | (val & 0xFF);
             val = 0;
             octet++;
-        } else {
+        }
+        else
+        {
             return -1;
         }
         str++;
     }
-    
-    if (octet != 3) return -1;
+
+    if (octet != 3)
+        return -1;
     ip = (ip << 8) | (val & 0xFF);
     *out = ip;
     return 0;

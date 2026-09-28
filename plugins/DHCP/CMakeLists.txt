@@ -12,6 +12,9 @@ target_include_directories(DHCPService PUBLIC
     ${CMAKE_SOURCE_DIR}/thirdparty
 )
 
+# Link against PacketLib (shared library for Packet class)
+target_link_libraries(DHCPService PRIVATE PacketLib)
+
 if(WIN32)
     target_link_libraries(DHCPService PRIVATE Ws2_32.lib)
 endif()

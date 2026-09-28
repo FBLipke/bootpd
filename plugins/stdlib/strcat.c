@@ -2,11 +2,14 @@
  * strcat - Concatenate two strings
  */
 
-#include <stdlib.h>
+#include "include/stdlib.h"
 
-char *strcat(char *dest, const char *src) {
+char *strcat(char *dest, const char *src)
+{
     char *d = dest;
-    while (*d) d++;
-    while ((*d++ = *src++));
+    while (*d)
+        d++;
+    while ((*d++ = *src++))
+        ;
     return dest;
 }

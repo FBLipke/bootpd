@@ -14,13 +14,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 #include "Common/Environment.h"
 #include "Common/Functions.h"
+#include "Network/Interface/IPacket.h"
 #include "Interface/IBootpd.h"
+#include "Network/Packet/Packet.h"
+#include "Network/Interface/IClient.h"
+#include "Network/Client/Client.h"
 #include "Network/Interface/ISocket.h"
-#include "Network/Socket.h"
+#include "Network/Socket/Socket.h"
 #include "Network/Interface/IServer.h"
-#include "Network/Server.h"
+#include "Network/Server/Server.h"
 #include "Network/ServerManager.h"
 #include "Services/ServiceManager.h"
+#include "Network/ClientManager.h"
 
 namespace bootp
 {
@@ -34,9 +39,9 @@ namespace bootp
 
 		IBootpd *Get_SubSystem(const _STRING &id);
 
-		bool Init(const _INT32 &argc, const _BYTE *argv[]) override;
+		_BOOL Init(const _INT32 &argc, const char *argv[]) override;
 
-		bool Start() override;
+		_BOOL Start() override;
 
 		void HeartBeat() override;
 

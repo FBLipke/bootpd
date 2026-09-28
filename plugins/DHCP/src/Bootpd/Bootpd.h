@@ -1,8 +1,16 @@
-#include <ctime>
-#include <string>
-#include <memory>
-#include <vector>
-#include <map>
-
 #pragma once
-#include "Services/DHCPService.h"
+#ifndef _ENVIRONMENT_PATH
+#define _ENVIRONMENT_PATH "../../../../bootpd/src/Bootpd/Common/Environment.h"
+#endif
+
+#ifndef _IPACKET_PATH
+#define _IPACKET_PATH "../../../../bootpd/src/Bootpd/Network/Interface/IPacket.h"
+#endif
+
+#ifndef _PACKET_PATH
+#define _PACKET_PATH "../../../../bootpd/src/Bootpd/Network/Packet/Packet.h"
+#endif
+
+#include _ENVIRONMENT_PATH
+#include _IPACKET_PATH
+#include _PACKET_PATH

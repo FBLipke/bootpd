@@ -1,6 +1,5 @@
-#include "../Bootpd.h"
 #pragma once
-
+#include "../Bootpd.h"
 class DHCPOption
 {
 

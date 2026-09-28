@@ -43,7 +43,7 @@ namespace bootp
         virtual void HeartBeat() = 0;
         virtual void Close() = 0;
 
-        virtual void Handle_Service_Request() = 0;
+        virtual void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket>) = 0;
 
         // Lifecycle
         virtual _BOOL on_load() = 0;
@@ -103,7 +103,7 @@ namespace bootp
             ServiceManager();
             ~ServiceManager();
 
-            _BOOL Init(const _INT32 &argc, const _BYTE *argv[]);
+            _BOOL Init(const _INT32 &argc, const char *argv[]);
             _BOOL Start();
             void HeartBeat();
             void LoadPlugins();

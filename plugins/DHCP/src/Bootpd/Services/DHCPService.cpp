@@ -5,6 +5,7 @@ namespace bootp::Plugins
     bool DHCPService::Init()
     {
         printf("[D] DHCPService::Init()\n");
+
         return true;
     }
 
@@ -19,6 +20,10 @@ namespace bootp::Plugins
     }
 
     void DHCPService::Close()
+    {
+    }
+
+    void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet)
     {
     }
 }

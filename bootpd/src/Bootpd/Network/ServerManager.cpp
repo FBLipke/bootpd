@@ -13,83 +13,80 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ServerManager.h"
 
-namespace bootp
+namespace bootp::Network
 {
-	namespace Network
-	{
 #ifdef _WIN32
-		_BOOL ServerManager::Init_Winsock(_INT32 major, _INT32 minor)
-		{
-			ClearBuffer(&wsa, sizeof wsa);
-			return WSAStartup(MAKEWORD(major, minor), &wsa) == 0;
-		}
+	_BOOL ServerManager::Init_Winsock(_INT32 major, _INT32 minor)
+	{
+		ClearBuffer(&wsa, sizeof wsa);
+		return WSAStartup(MAKEWORD(major, minor), &wsa) == 0;
+	}
 
-		_BOOL ServerManager::Close_Winsock()
-		{
-			return WSACleanup() == 0;
-		}
+	_BOOL ServerManager::Close_Winsock()
+	{
+		return WSACleanup() == 0;
+	}
 #endif
 
-		ServerManager::ServerManager()
-		{
-		}
+	ServerManager::ServerManager()
+	{
+	}
 
-		ServerManager::~ServerManager()
-		{
-		}
+	ServerManager::~ServerManager()
+	{
+	}
 
-		_BOOL ServerManager::Init(const _INT32 &argc, const _BYTE *argv[])
-		{
-			printf("[D] Bootpd - ServerMgr...\n");
+	_BOOL ServerManager::Init(const _INT32 &argc, const char *argv[])
+	{
+		printf("[D] Bootpd - ServerMgr...\n");
 #ifdef WIN32
-			Init_Winsock(2, 0);
+		Init_Winsock(2, 0);
 #endif
-			auto _id = Functions::GenerateUUID();
-			this->servers.emplace(_id, std::make_unique<bootp::Network::Server>(_id));
+		auto _id = Functions::GenerateUUID();
+		this->servers.emplace(_id, std::make_unique<bootp::Network::Server>(_id));
 
-			for (const auto &s : this->servers)
+		for (const auto &s : this->servers)
+		{
+			auto *srv = s.second.get();
+
+			// ServerDataReceived ruft HandleManager_Request auf
+			srv->ServerDataReceived = [this](const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)
 			{
-				auto *srv = s.second.get();
+				if (this->Handle_Manager_Request)
+					this->Handle_Manager_Request(server_id, socket_id, request, ip, port, client);
+			};
 
-				// ServerDataReceived ruft HandleManager_Request auf
-				srv->ServerDataReceived = [this](const _STRING &server_id, const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)
-				{
-					if (this->HandleManager_Request)
-						this->HandleManager_Request(server_id, socket_id, buffer, length);
-				};
-
-				srv->Init();
-			}
-
-			return true;
+			srv->Init();
 		}
 
-		_BOOL ServerManager::Start()
-		{
-			for (const auto &s : this->servers)
-			{
-				s.second.get()->Start();
-				s.second.get()->Listen();
-			}
+		return true;
+	}
 
-			return true;
+	_BOOL ServerManager::Start()
+	{
+		for (const auto &s : this->servers)
+		{
+			s.second.get()->Start();
+			s.second.get()->Listen();
 		}
 
-		void ServerManager::HeartBeat()
-		{
-			for (const auto &s : this->servers)
-				s.second.get()->HeartBeat();
-		}
+		return true;
+	}
 
-		void ServerManager::Close()
-		{
-			for (const auto &s : this->servers)
-				s.second.get()->Close();
+	void ServerManager::HeartBeat()
+	{
+		for (const auto &s : this->servers)
+			s.second.get()->HeartBeat();
+	}
 
-			this->servers.clear();
+	void ServerManager::Close()
+	{
+		for (const auto &s : this->servers)
+			s.second.get()->Close();
+
+		this->servers.clear();
 #ifdef WIN32
-			Close_Winsock();
+		Close_Winsock();
 #endif
-		}
 	}
 }

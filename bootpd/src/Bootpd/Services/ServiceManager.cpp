@@ -117,15 +117,16 @@ namespace bootp
             return names;
         }
 
-        bool ServiceManager::Init(const _INT32 &argc, const _BYTE *argv[])
+        bool ServiceManager::Init(const _INT32 &argc, const char *argv[])
         {
             printf("[D] Bootpd - ServiceMgr...\n");
 
-            this->HandleManager_Request = [&](const _STRING &server_id, const _STRING &socket_id,
-                                              const _BYTE *buffer, const _SIZET &length)
+            this->Handle_Manager_Request = [&](const _STRING &server_id, const _STRING &socket_id,
+                                               const std::shared_ptr<bootp::Network::IPacket> &request,
+                                               const _IPADDR &ip, const _USHORT &port, const _STRING &id)
             {
                 for (const auto &service : this->services)
-                    service.second.get()->Handle_Service_Request();
+                    service.second.get()->Handle_Service_Request(server_id, socket_id, id, request);
             };
 
             this->LoadPlugins();

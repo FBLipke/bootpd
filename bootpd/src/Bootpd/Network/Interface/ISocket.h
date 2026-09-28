@@ -26,7 +26,7 @@ namespace bootp
 			virtual void Listen() = 0;
 			virtual void HeartBeat() = 0;
 			virtual void Close() = 0;
-			std::function<void(const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)> SocketDataReceived;
+			std::function<void(const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> SocketDataReceived;
 
 		private:
 			_STRING id;

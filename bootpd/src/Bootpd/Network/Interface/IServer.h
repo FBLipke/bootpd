@@ -27,7 +27,7 @@ namespace bootp
 			virtual void HeartBeat() = 0;
 			virtual void Close() = 0;
 			std::function<void(const _STRING &server_id, const _STRING &socket_id,
-							   const _BYTE *buffer, const _SIZET &length)>
+							   const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)>
 				ServerDataReceived;
 
 		private:

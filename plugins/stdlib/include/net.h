@@ -6,7 +6,7 @@
 #ifndef _NET_H
 #define _NET_H
 
-#include <stdlib.h>
+#include "stdlib.h"
 
 /* Byte order conversions */
 uint16_t htons(uint16_t x);

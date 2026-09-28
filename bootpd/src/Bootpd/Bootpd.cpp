@@ -12,6 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Bootpd.h"
+#include "Network/Interface/IPacket.h"
 
 namespace bootp
 {
@@ -36,11 +37,12 @@ namespace bootp
 		return IBootpd::_subSystems.at(id).get();
 	}
 
-	bool bootpd::Init(const _INT32 &argc, const _BYTE *argv[])
+	_BOOL bootpd::Init(const _INT32 &argc, const char *argv[])
 	{
 		// Subsystems hinzufügen
 		this->Add_Subsys("ServiceManager", std::make_unique<bootp::Services::ServiceManager>());
 		this->Add_Subsys("ServerManager", std::make_unique<bootp::Network::ServerManager>());
+		this->Add_Subsys("ClientManager", std::make_unique<bootp::Network::ClientManager>());
 
 		// ERST: Alle Init() aufrufen
 		for (const auto &s : IBootpd::_subSystems)
@@ -49,18 +51,24 @@ namespace bootp
 		}
 
 		// DANN: ServerManager.HandleManager_Request auf ServiceManager.HandleManager_Request verbinden
+		auto *clientMgr = static_cast<bootp::Network::ClientManager *>(
+			IBootpd::_subSystems["ClientManager"].get());
 		auto *serverMgr = static_cast<bootp::Network::ServerManager *>(
 			IBootpd::_subSystems["ServerManager"].get());
 		auto *serviceMgr = static_cast<bootp::Services::ServiceManager *>(
 			IBootpd::_subSystems["ServiceManager"].get());
 
 		// ServerManager leitet Daten an ServiceManager weiter
-		serverMgr->HandleManager_Request =
-			[serviceMgr](const _STRING &server_id, const _STRING &socket_id, const _BYTE *buffer, const _SIZET &length)
+		serverMgr->Handle_Manager_Request =
+			[clientMgr, serviceMgr](const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &id)
 		{
-			if (serviceMgr->HandleManager_Request)
+			if (clientMgr->Add)
 			{
-				serviceMgr->HandleManager_Request(server_id, socket_id, buffer, length);
+				_STRING clientId = clientMgr->Add(id, ip, port);
+				if (serviceMgr->Handle_Manager_Request)
+				{
+					serviceMgr->Handle_Manager_Request(server_id, socket_id, request, ip, port, id);
+				}
 			}
 		};
 
@@ -75,7 +83,7 @@ namespace bootp
 		}
 	}
 
-	bool bootpd::Start()
+	_BOOL bootpd::Start()
 	{
 		for (const auto &s : IBootpd::_subSystems)
 		{

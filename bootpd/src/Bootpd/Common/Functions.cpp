@@ -23,7 +23,7 @@ _STRING Functions::GenerateUUID()
     RPC_CSTR str = nullptr;
     UuidToStringA(&uuid, &str);
 
-    result = (_BYTE *)str;
+    result = (char *)str;
     RpcStringFreeA(&str);
 #else
     std::ifstream f("/proc/sys/kernel/random/uuid");
@@ -35,7 +35,7 @@ _STRING Functions::GenerateUUID()
     else
     {
         // Fallback: manual UUID v4 generation
-        static const _BYTE *hex = "0123456789abcdef";
+        static const char *hex = "0123456789abcdef";
         result = "00000000-0000-0000-0000-000000000000";
         for (_SIZET i = 0; i < 36; i++)
         {
@@ -55,11 +55,11 @@ _STRING Functions::GenerateUUID()
     return result;
 }
 
-void Functions::__memcpy(void *dst, const void *src, _SIZET length)
+void Functions::__memcpy(void *dst, const void *src, const _SIZET &length)
 {
-    std::copy(static_cast<const _BYTE *>(src),
-              static_cast<const _BYTE *>(src) + length,
-              static_cast<_BYTE *>(dst));
+    std::copy(static_cast<const char *>(src),
+              static_cast<const char *>(src) + length,
+              static_cast<char *>(dst));
 }
 
 _INT32 Functions::__inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr)
