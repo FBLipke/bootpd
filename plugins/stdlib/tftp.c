@@ -130,67 +130,64 @@ const char *tftp_error_str(int errcode) {
 }
 
 /* TFTP Open using PXE ROM */
-int tftp_pxe_open(uint32_t server_ip, const char *filename) {
-    tftp_open_t open;
+int tftp_pxe_open(uint32_t server_ip, const char *filename, tftp_open_t *open_struct) {
     int i;
     
     /* Clear structure */
     for (i = 0; i < sizeof(tftp_open_t); i++) {
-        ((uint8_t*)&open)[i] = 0;
+        ((uint8_t*)open_struct)[i] = 0;
     }
     
     /* Fill structure */
-    open.ServerIP = server_ip;
-    open.Socket = 0;  /* Auto-assign */
+    open_struct->ServerIP = server_ip;
+    open_struct->Socket = 0;  /* Auto-assign */
     
     /* Filename */
     i = 0;
     while (filename[i] && i < 255) {
-        open.Filename[i] = filename[i];
+        open_struct->Filename[i] = filename[i];
         i++;
     }
-    open.Filename[i] = 0;
+    open_struct->Filename[i] = 0;
     
     /* Mode */
-    open.Mode[0] = 'o';
-    open.Mode[1] = 'c';
-    open.Mode[2] = 't';
-    open.Mode[3] = 'e';
-    open.Mode[4] = 't';
-    open.Mode[5] = 0;
+    open_struct->Mode[0] = 'o';
+    open_struct->Mode[1] = 'c';
+    open_struct->Mode[2] = 't';
+    open_struct->Mode[3] = 'e';
+    open_struct->Mode[4] = 't';
+    open_struct->Mode[5] = 0;
     
     /* Call PXE API */
-    uint16_t seg = ((uint32_t)&open >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)&open & 0xFFFF;
+    uint16_t seg = ((uint32_t)open_struct >> 16) & 0xFFFF;
+    uint16_t off = (uint32_t)open_struct & 0xFFFF;
     
     _pxe_call(PXENV_UNDI_TFTP_OPEN, 0, 0, 0, seg, off);
     
-    if (open.Status != 0) {
+    if (open_struct->Status != 0) {
         return -1;
     }
     
-    return open.Socket;
+    return open_struct->Socket;
 }
 
 /* TFTP Read using PXE ROM */
-int tftp_pxe_read(uint16_t socket, uint8_t *buffer, uint16_t maxlen) {
-    tftp_read_t *read = (tftp_read_t*)buffer;
-    
+int tftp_pxe_read(int socket, void *buffer, uint16_t maxlen, tftp_read_t *read_struct) {
     /* Buffer layout: read struct followed by data area */
-    read->BufferLen = maxlen - sizeof(tftp_read_t);
+    read_struct->BufferLen = maxlen - sizeof(tftp_read_t);
     
     /* Call PXE API */
-    uint16_t seg = ((uint32_t)read >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)read & 0xFFFF;
+    uint16_t seg = ((uint32_t)read_struct >> 16) & 0xFFFF;
+    uint16_t off = (uint32_t)read_struct & 0xFFFF;
     
     /* Set socket in CX */
     _pxe_call(PXENV_UNDI_TFTP_READ_FILE, socket, 0, 0, seg, off);
     
-    if (read->Status != 0) {
+    if (read_struct->Status != 0) {
         return -1;
     }
     
-    return read->PacketLen;
+    return read_struct->PacketLen;
 }
 
 /* TFTP Close using PXE ROM */
