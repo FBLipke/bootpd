@@ -13,7 +13,11 @@ target_include_directories(DHCPService PUBLIC
 )
 
 # Link against PacketLib (shared library for Packet class)
-target_link_libraries(DHCPService PRIVATE PacketLib)
+# PacketLib is in the main CMake binary dir
+target_link_libraries(DHCPService PRIVATE 
+    PacketLib
+    ${CMAKE_BINARY_DIR}/libPacketLib.lib
+)
 
 if(WIN32)
     target_link_libraries(DHCPService PRIVATE Ws2_32.lib)
