@@ -41,7 +41,7 @@ typedef std::string _STRING;
 typedef bool _BOOL;
 typedef std::thread _THREAD;
 
-#define __MEMSET(o, l) std::memset(0, NULL, l);
+#define __MEMSET(o, l) std::memset(o, 0, l);
 
 #ifdef __GNUC__
 #include "environment_linux.h"

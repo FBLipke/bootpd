@@ -1,64 +1,79 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "CMake: Configure",
-            "type": "shell",
-            "command": "cd build && cmake ..",
-            "group": "build",
-            "problemMatcher": [],
-            "detail": "Run CMake configure"
-        },
-        {
-            "label": "Build (Windows: Debug)",
-            "type": "shell",
-            "command": "${workspaceFolder}/build.cmd",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": ["$msCompile"],
-            "detail": "Build bootpd using build.cmd (Windows Debug)"
-        },
-        {
-            "label": "Build (Windows: Release)",
-            "type": "shell",
-            "command": "${workspaceFolder}/build.cmd Release",
-            "group": "build",
-            "problemMatcher": ["$msCompile"],
-            "detail": "Build bootpd using build.cmd (Windows Release)"
-        },
-        {
-            "label": "Build (Linux: Debug)",
-            "type": "shell",
-            "command": "mkdir -p build && cd build && cmake .. && make",
-            "group": "build",
-            "problemMatcher": ["$gcc"],
-            "detail": "Build bootpd on Linux (Debug)"
-        },
-        {
-            "label": "Build (Linux: Release)",
-            "type": "shell",
-            "command": "mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make",
-            "group": "build",
-            "problemMatcher": ["$gcc"],
-            "detail": "Build bootpd on Linux (Release)"
-        },
-        {
-            "label": "Clean (Windows)",
-            "type": "shell",
-            "command": "if exist build ( rd /s /q build )",
-            "group": "build",
-            "problemMatcher": [],
-            "detail": "Clean build directory (Windows)"
-        },
-        {
-            "label": "Clean (Linux)",
-            "type": "shell",
-            "command": "rm -rf build",
-            "group": "build",
-            "problemMatcher": [],
-            "detail": "Clean build directory (Linux)"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cmake",
+      "label": "CMake: Configure",
+      "command": "configure",
+      "args": [
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Configure bootpd with CMake for Visual Studio"
+    },
+    {
+      "type": "cmake",
+      "label": "CMake: Build",
+      "command": "build",
+      "args": [
+        "--config",
+        "Debug"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Build bootpd with CMake"
+    },
+    {
+      "type": "shell",
+      "label": "Clean Build Folder",
+      "command": "if (Test-Path build) { Remove-Item -Recurse -Force build }",
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Delete build folder before rebuild"
+    },
+    {
+      "type": "shell",
+      "label": "Full Rebuild",
+      "command": "",
+      "dependsOn": [
+        "Clean Build Folder",
+        "CMake: Configure",
+        "CMake: Build"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Clean, configure and build bootpd"
+    },
+    {
+      "type": "process",
+      "command": "/usr/bin/env",
+      "args": [
+        "CC=clang",
+        "CFLAGS=-g -Wall",
+        "make",
+        "${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "label": "makelldb: selected file"
+    }
+  ]
 }

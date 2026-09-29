@@ -2,7 +2,11 @@
 
 namespace bootp::Plugins::DHCP::Network::Packet
 {
-    DHCPPacket::DHCPPacket(/* args */)
+    DHCPPacket::DHCPPacket() : Packet()
+    {
+    }
+
+    DHCPPacket::DHCPPacket(const char *data, const _SIZET &len) : Packet(data, len)
     {
     }
 

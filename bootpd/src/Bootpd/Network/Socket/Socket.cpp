@@ -73,7 +73,7 @@ namespace bootp
 				char tempBuffer[UINT16_MAX];
 				hostAddrSize = sizeof(sockaddr_in);
 				sockaddr_in _remote;
-				__MEMSET(&_remote, sizeof(_remote));
+				memset(&_remote, 0x00, sizeof(_remote));
 
 				auto messageLength = recvfrom(socket->_sock, tempBuffer, sizeof(tempBuffer), 0,
 											  reinterpret_cast<sockaddr *>(&_remote), &hostAddrSize);
