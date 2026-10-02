@@ -43,7 +43,7 @@ typedef _UINT _SOCKLENT;
 #define SO_REUSEPORT SO_REUSE_UNICASTPORT
 #define _GET_CUR_WORKINGDIR(p, s) _getcwd(p, s)
 #define _close(s) closesocket(s)
-#define ClearBuffer(x, y) memset(x, 0, y)
+#define _ClearBuffer(x, y) memset(x, 0, y)
 #define _GetLastError strerror(errno)
 #define _select(n, r, w, e, t) select(0, r, w, e, t)
 #define _STAT _stat

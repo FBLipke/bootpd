@@ -43,11 +43,12 @@ namespace bootp
         virtual void HeartBeat() = 0;
         virtual void Close() = 0;
 
-        virtual void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket>) = 0;
+        virtual void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) = 0;
 
         // Lifecycle
         virtual _BOOL on_load() = 0;
         virtual void on_unload() = 0;
+        virtual void on_install() = 0;
 
         // Configuration
         virtual void configure(const _STRING &key, const _STRING &value) = 0;
@@ -55,11 +56,9 @@ namespace bootp
 
     typedef IPlugin *(*CreateFunc)();
 
-    extern "C"
-    {
-        // Diese Funktion MUSS in jeder Plugin-DLL exportiert werden
-        bootp::IPlugin *create_plugin();
-    }
+    // Diese Funktion MUSS in jeder Plugin-DLL exportiert werden
+    bootp::IPlugin *create_plugin();
+
     namespace Services
     {
 

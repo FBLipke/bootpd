@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Services/ServiceManager.h"
 #include "Network/ClientManager.h"
 
+#include "../thirdparty/tinyxml2/tinyxml2.h"
 namespace bootp
 {
 	class bootpd : public IBootpd

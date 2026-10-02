@@ -15,7 +15,7 @@ uint32_t htonl(uint32_t x);
 uint32_t ntohl(uint32_t x);
 
 /* CRC32 */
-uint32_t crc32(const uint8_t *data, size_t len);
+uint32_t crc32(const uint8_t *data, unsigned long len);
 
 /* IP address helpers */
 int parse_ip(const char *str, uint32_t *out);
@@ -27,4 +27,4 @@ void format_mac(const uint8_t *mac, char *buf);
 #endif /* _NET_H */
 
 /* CRC16 */
-uint16_t crc16(const uint8_t *data, size_t len);
+uint16_t crc16(const uint8_t *data, unsigned long len);

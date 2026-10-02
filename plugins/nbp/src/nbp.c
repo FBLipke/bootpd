@@ -4,9 +4,9 @@
  * Mit TFTP Download!
  */
 
-#include "../../stdlib/include/stdlib.h"
-#include "../../stdlib/include/pxe.h"
-#include "../../stdlib/include/dhcp.h"
+#include "../../stdlib/src/include/stdlib.h"
+#include "../../stdlib/src/include/pxe.h"
+#include "../../stdlib/src/include/dhcp.h"
 
 /* Extern ASM Funktionen (mit underscore!) */
 extern void _print_char(char c);
@@ -112,50 +112,6 @@ static int tftp_open(uint32_t server_ip, const char *filename)
     _print_newline();
 
     return open.Socket;
-}
-
-/* TFTP Read - using tftp_read_t from tftp.h */
-static int tftp_read(int socket, uint8_t *buffer, uint16_t maxlen)
-{
-    tftp_read_t *read = (tftp_read_t *)buffer;
-
-    read->BufferLen = maxlen - sizeof(tftp_read_t);
-
-    uint16_t seg = ((uint32_t)read >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)read & 0xFFFF;
-
-    _pxe_call(PXENV_UNDI_TFTP_READ, socket, 0, 0, seg, off);
-
-    if (read->Status != 0)
-    {
-        return -1;
-    }
-
-    return read->PacketLen;
-}
-
-/* TFTP Close */
-static void tftp_close(int socket)
-{
-#ifdef _MSC_VER_
-#pragma pack(push, 1)
-#endif
-    struct
-    {
-        uint16_t Status;
-        uint16_t Socket;
-#ifdef _MSC_VER_
-    } __attribute__((packed)) close_pxe;
-#else
-    } close_pxe;
-#pragma pack(pop)
-#endif
-    close_pxe.Socket = socket;
-
-    uint16_t seg = ((uint32_t)&close_pxe >> 16) & 0xFFFF;
-    uint16_t off = (uint32_t)&close_pxe & 0xFFFF;
-
-    _pxe_call(PXENV_UNDI_TFTP_CLOSE, 0, 0, 0, seg, off);
 }
 
 /* TFTP Download and Boot */

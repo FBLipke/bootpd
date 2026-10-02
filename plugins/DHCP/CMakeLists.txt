@@ -20,18 +20,11 @@ if(WIN32)
     target_link_libraries(DHCPService PRIVATE Ws2_32.lib)
 endif()
 
-# Output to plugins/ directory (same level as executable)
-if(WIN32)
-    set_target_properties(DHCPService PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins"
-        PREFIX ""
-    )
-else()
-    set_target_properties(DHCPService PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins"
-        PREFIX ""
-    )
-endif()
+set_target_properties(DHCPService PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/Debug/plugins/"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/Debug/plugins/"
+    PREFIX ""
+)
 
 set_target_properties(DHCPService PROPERTIES
     VERSION 1.0.0

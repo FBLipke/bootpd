@@ -5,11 +5,10 @@
             "name": "bootpd Debug",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/Debug/bootpd.exe",
+            "program": "${workspaceFolder}/bin/Debug/bootpd.exe",
             "args": [],
-            "cwd": "${workspaceFolder}/build/bin/Debug",
+            "cwd": "${workspaceFolder}/bin/Debug",
             "environment": [],
-            "externalConsole": true
         },
         {
             "name": "bootpd Release",
@@ -17,9 +16,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/bin/Release/bootpd.exe",
             "args": [],
-            "cwd": "${workspaceFolder}/build/bin/Release",
+            "cwd": "${workspaceFolder}/bin/Release",
             "environment": [],
-            "externalConsole": true
         }
     ]
 }

@@ -9,6 +9,7 @@ namespace bootp::Plugins
     class DHCPService : public IPlugin
     {
     public:
+        static IPlugin *create() { return new DHCPService(); }
         // IPlugin interface
         std::string name() const override { return "DHCP"; }
         PluginType type() const override { return PluginType::NETWORK; }
@@ -19,12 +20,14 @@ namespace bootp::Plugins
         void HeartBeat() override;
         void Close() override;
 
-        bool on_load() override;
-        void on_unload() override;
+        __LIBEXPORT bool on_load() override;
+        __LIBEXPORT void on_unload() override;
+        __LIBEXPORT void on_install() override;
 
-        void configure(const std::string &key, const std::string &value) override;
+        __LIBEXPORT void configure(const std::string &key, const std::string &value) override;
 
-        void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet);
+        void Handle_Service_Request(const _STRING &server, const _STRING &socket,
+                                    const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) override;
 
     private:
     };

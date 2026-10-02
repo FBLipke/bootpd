@@ -1,30 +1,34 @@
 {
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "files.associations": {
-        "*.h": "cpp",
-        "*.cpp": "cpp",
-        "*.c": "c",
-        "*.hpp": "cpp"
-    },
-    "files.exclude": {
-        "**/.git": true,
-        "**/build": true,
-        "**/bin": true,
-        "**/thirdparty": false
-    },
-    "search.exclude": {
-        "**/build": true,
-        "**/bin": true,
-        "**/thirdparty": true
-    },
-    "editor.formatOnSave": false,
-    "editor.insertSpaces": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "debug.onTaskErrors": "showErrors",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/src"
+    ],
+    "C_Cpp.default.compilerPath": "${workspaceFolder}/src",
+    "git.openRepositoryInParentFolders": "always",
+    "makefile.configureOnOpen": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "git.autofetch": true,
+    "editor.formatOnSave": true,
+    "window.autoDetectColorScheme": true,
+    "editor.autoIndentOnPaste": true,
+    "editor.formatOnPaste": true,
+    "workbench.tree.indent": 32,
+    "workbench.startupEditor": "none",
+    "workbench.browser.enableChatTools": false,
+    "workbench.settings.alwaysShowAdvancedSettings": true,
     "editor.tabSize": 4,
-    "cmake.configureOnOpen": true,
-    "cmake.showOptionsChangedNotification": false,
-    "cmake.statusbar.advanced": {
-        "Configurations": {
-            "hidden": ["Win32"]
-        }
-    }
+    "workbench.settings.showAISearchToggle": false,
+    "cmake.sourceDirectory": "/mnt/projects/bootpd",
+    "files.autoSaveWorkspaceFilesOnly": true,
+    "workbench.editor.showIcons": true,
+    "workbench.productIconTheme": "Default",
+    "workbench.accounts.showAvatar": false,
+    "workbench.browser.enableRemoteProxy": false,
+    "workbench.browser.experimentalUserTools.enabled": true,
+    "workbench.editor.languageDetection": true,
+    "workbench.activityBar.autoHide": true,
+    "workbench.preferredDarkColorTheme": "Atom One Light",
+    "workbench.preferredLightColorTheme": "Atom One Light"
 }

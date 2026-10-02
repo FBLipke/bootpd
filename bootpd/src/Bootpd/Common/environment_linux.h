@@ -49,7 +49,7 @@ typedef void *PluginHandle;
 #define SOCKET_ERROR -1
 
 #define _GET_CUR_WORKINGDIR(p, s) getcwd(p, s);
-#define ClearBuffer(x, y) bzero(x, y)
+#define _ClearBuffer(x, y) bzero(x, y)
 #define _STAT stat
 #define _close(s) close(s)
 #define _GetLastError strerror(errno)

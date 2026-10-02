@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Output directories
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Debug)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Debug)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/Debug)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # ===== SQLite static library from thirdparty =====
@@ -22,6 +22,7 @@ add_library(PacketLib STATIC ${PACKET_SOURCES})
 target_include_directories(PacketLib PUBLIC 
     ${CMAKE_SOURCE_DIR}/bootpd/src
 )
+
 
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
@@ -40,6 +41,7 @@ list(FIND ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Pack
 if(NOT ${_idx} EQUAL -1)
     list(REMOVE_ITEM ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Packet.cpp")
 endif()
+add_library(tinyxml2_lib STATIC ${CMAKE_SOURCE_DIR}/thirdparty/tinyxml2/tinyxml2.cpp)
 
 add_executable(bootpd ${ALL_SOURCES})
 
@@ -48,7 +50,7 @@ target_include_directories(bootpd PRIVATE
     ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-    target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib)
+    target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
 else()
     target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib pthread)
 endif()

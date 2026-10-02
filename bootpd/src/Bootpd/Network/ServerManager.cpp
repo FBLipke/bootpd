@@ -18,7 +18,7 @@ namespace bootp::Network
 #ifdef _WIN32
 	_BOOL ServerManager::Init_Winsock(_INT32 major, _INT32 minor)
 	{
-		ClearBuffer(&wsa, sizeof wsa);
+		_ClearBuffer(&wsa, sizeof wsa);
 		return WSAStartup(MAKEWORD(major, minor), &wsa) == 0;
 	}
 

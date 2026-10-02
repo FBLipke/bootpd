@@ -1,7 +1,7 @@
 #pragma once
 #include "../Bootpd.h"
 
-namespace bootpd::Services::DHCP
+namespace bootp::Plugins::DHCP
 {
     enum class Architecture : _USHORT
     {
@@ -45,4 +45,50 @@ namespace bootpd::Services::DHCP
         LeaseQueryStatus = 17,
         Tls = 18
     };
+
+    enum class HardwareType
+    {
+        Reserved = 0,
+        Ethernet = 1,
+        Experimental_ethernet = 2,
+        Ax25 = 3,
+        Pronet_token_ring = 4,
+        Chaos = 5,
+        Ieee802 = 6,
+        Arcnet = 7,
+        Hyperchannel = 8,
+        Lanstar = 9,
+        Autonet_short_addr = 10,
+        Localtalk = 11,
+        Localnet = 12,
+        Ultralink = 13,
+        Smds = 14,
+        Frame_relay = 15,
+        Atm_16 = 16,
+        Hdlc = 17,
+        Fibre_channel = 18,
+        Atm_19 = 19,
+        Serial_line = 20,
+        Atm_21 = 21,
+        Mil_std_188_220 = 22,
+        Metricom = 23,
+        Ieee1394 = 24,
+        Mapos = 25,
+        Twinaxial = 26,
+        Eui64 = 27,
+        Hiparp = 28,
+        Iso7816_3 = 29,
+        Arpsec = 30,
+        Ipsec_tunnel = 31,
+        Infiniband = 32,
+        Tia_102_p25_cai = 33,
+        Wiegand = 34,
+        Pure_ip = 35,
+        Hw_exp1 = 36,
+        Hfi = 37,
+        Unified_bus = 38,
+        Hw_exp2 = 256,
+        Aethernet = 257,
+        Reserved_65535 = 65535
+    } t;
 }

@@ -19,7 +19,7 @@ file(GLOB NBP_SOURCES
 
 # Stdlib sources (moved to plugins/stdlib/)
 file(GLOB NBP_STDLIB_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../stdlib/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../stdlib/src/*.c
 )
 
 # Combine all sources
@@ -27,7 +27,7 @@ set(ALL_NBP_SOURCES ${NBP_SOURCES} ${NBP_STDLIB_SOURCES})
 
 # Include directories
 set(NBP_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/stdlib/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/stdlib/src/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
@@ -47,7 +47,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU")
     # Linker script for 16-bit output
     target_link_libraries(nbp -T ${CMAKE_CURRENT_SOURCE_DIR}/src/linker.ld -melf_i386)
 elseif(MSVC)
-    target_compile_options(nbp PRIVATE /safeseh)
+    target_compile_options(nbp PRIVATE /safeseh /X)
 endif()
 
 # Copy output to bin folder

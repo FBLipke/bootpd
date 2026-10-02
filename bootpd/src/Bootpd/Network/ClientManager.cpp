@@ -27,6 +27,8 @@ namespace bootp
 
 		_BOOL ClientManager::Init(const _INT32 &argc, const char *argv[])
 		{
+			printf("[D] Bootpd - ClientMgr...\n");
+
 			this->Remove = [&](const _STRING &id)
 			{
 				this->clients.at(id).get()->Close();
@@ -35,7 +37,7 @@ namespace bootp
 
 			this->Add = [&](const _STRING &id, const _IPADDR &ip, const _USHORT &port)
 			{
-				this->clients.emplace(id, std::make_unique<Client>(id, ip, port));
+				this->clients.insert_or_assign(id, std::make_unique<Client>(id, ip, port));
 
 				return id;
 			};

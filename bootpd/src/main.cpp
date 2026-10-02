@@ -21,7 +21,7 @@ void _heartbeat(IBootpd* _instance)
 	while (str != "!exit")
 	{
 		std::this_thread::sleep_for(
-			std::chrono::milliseconds(3000));
+			std::chrono::milliseconds(30000));
 		
 		if (_instance == nullptr)
 			continue;

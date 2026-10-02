@@ -14,3 +14,5 @@
 #include _ENVIRONMENT_PATH
 #include _IPACKET_PATH
 #include _PACKET_PATH
+
+#include "Defines/DHCPOption.h"

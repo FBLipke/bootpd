@@ -9,6 +9,9 @@ namespace bootp::Network
 
     Packet::Packet(const char *data, const _SIZET &len)
     {
+        if (IsNull(data))
+            return;
+
         this->buffer.assign(data, data + len);
     }
 }

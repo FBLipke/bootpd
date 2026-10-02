@@ -29,6 +29,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <limits.h>
 #pragma once
 
+#ifdef _WIN32
+#define __LIBEXPORT __declspec(dllexport)
+#else
+#define __LIBEXPORT __attribute__((visibility("default")))
+#endif
+
 typedef uint16_t _USHORT;
 typedef int16_t _SHORT;
 typedef unsigned long _ULONG;
@@ -42,6 +48,8 @@ typedef bool _BOOL;
 typedef std::thread _THREAD;
 
 #define __MEMSET(o, l) std::memset(o, 0, l);
+
+constexpr _BOOL IsNull(auto *x) { return x == nullptr; }
 
 #ifdef __GNUC__
 #include "environment_linux.h"

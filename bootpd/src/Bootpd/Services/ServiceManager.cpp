@@ -9,8 +9,6 @@ namespace bootp
 
         bool PluginLoader::load(const _STRING &path)
         {
-            printf("[D] Loading Libary: %s\n", path.c_str());
-
             PluginHandle handle = LoadLibraryA(path.c_str());
 
             if (!handle)
@@ -38,6 +36,8 @@ namespace bootp
                 FreeLibrary(handle);
                 return false;
             }
+
+            plugin->on_install();
 
             PluginEntry entry;
             entry.handle = handle;
@@ -119,6 +119,7 @@ namespace bootp
 
         bool ServiceManager::Init(const _INT32 &argc, const char *argv[])
         {
+
             printf("[D] Bootpd - ServiceMgr...\n");
 
             this->Handle_Manager_Request = [&](const _STRING &server_id, const _STRING &socket_id,
@@ -130,9 +131,6 @@ namespace bootp
             };
 
             this->LoadPlugins();
-
-            for (const auto &service : this->services)
-                service.second.get()->Init();
 
             return true;
         }
@@ -158,6 +156,7 @@ namespace bootp
 
             for (const auto &name : this->pluginLoader.list())
             {
+                printf("%s\n", name.c_str());
                 auto plugin = this->pluginLoader.find(name);
                 this->services.insert(std::make_pair(name, std::unique_ptr<IPlugin>(plugin)));
             }
@@ -165,8 +164,12 @@ namespace bootp
 
         void ServiceManager::Close()
         {
+            this->pluginLoader.unload_all();
+
             for (const auto &service : this->services)
                 service.second.get()->Close();
+
+            this->services.clear();
         }
 
         ServiceManager::ServiceManager()
@@ -175,6 +178,7 @@ namespace bootp
 
         ServiceManager::~ServiceManager()
         {
+            this->Close();
         }
     }
 }
