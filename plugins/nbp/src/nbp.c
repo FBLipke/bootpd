@@ -7,6 +7,7 @@
 #include "../../stdlib/src/include/stdlib.h"
 #include "../../stdlib/src/include/pxe.h"
 #include "../../stdlib/src/include/dhcp.h"
+#include "../../stdlib/src/include/tftp.h"
 
 /* Extern ASM Funktionen (mit underscore!) */
 extern void _print_char(char c);
@@ -27,18 +28,18 @@ static int detect_pxe(void)
     if (sig == SIGNATURE_NBP)
     {
         _print_str("!PXE OK");
-        _print_newline();
+        print_newline();
         return 1;
     }
     uint16_t *ptr = (uint16_t *)0xFF0E0018;
     if (*ptr == SIGNATURE_PXENV)
     {
         _print_str("PXENV+ OK");
-        _print_newline();
+        print_newline();
         return 1;
     }
     _print_str("No PXE!");
-    _print_newline();
+    print_newline();
     return 0;
 }
 
@@ -52,11 +53,11 @@ static int get_cached_packet(void)
     if ((status & 0xFF) == 0)
     {
         _print_str("OK");
-        _print_newline();
+        print_newline();
         return 0;
     }
     _print_str("Fail");
-    _print_newline();
+    print_newline();
     return -1;
 }
 
@@ -70,7 +71,7 @@ static int tftp_open(uint32_t server_ip, const char *filename)
     _print_str(filename);
     _print_str(" @ ");
     print_ip(server_ip);
-    _print_newline();
+    print_newline();
 
     /* Clear structure - using memset from stdlib */
     memset(&open, 0, sizeof(tftp_open_t));
@@ -103,13 +104,13 @@ static int tftp_open(uint32_t server_ip, const char *filename)
         _print_str("TFTP: Open failed (");
         print_hex16(open.Status);
         _print_str(")");
-        _print_newline();
+        print_newline();
         return -1;
     }
 
     _print_str("TFTP: Socket=");
     print_hex16(open.Socket);
-    _print_newline();
+    print_newline();
 
     return open.Socket;
 }
@@ -126,23 +127,24 @@ static void tftp_boot(uint32_t server_ip, const char *filename)
     if (socket < 0)
     {
         _print_str("TFTP: Failed to open!");
-        _print_newline();
+        print_newline();
         return;
     }
 
     _print_str("TFTP: Downloading to 0x");
     print_hex16(BOOT_LOAD_SEG);
     _print_str("000...");
-    _print_newline();
+    print_newline();
 
     while (total < 1024 * 1024)
     { /* Max 1MB */
-        bytes = tftp_read(socket, load_addr + total, 1400);
+        tftp_read_t read_packet;
+        bytes = tftp_pxe_read(socket, load_addr + total, 1400, &read_packet);
         if (bytes < 0)
         {
             _print_str("TFTP: Read error!");
-            _print_newline();
-            tftp_close(socket);
+            print_newline();
+            tftp_pxe_close(socket);
             return;
         }
 
@@ -159,7 +161,7 @@ static void tftp_boot(uint32_t server_ip, const char *filename)
             _print_str("TFTP: ");
             print_dec32(total);
             _print_str(" bytes...");
-            _print_newline();
+            print_newline();
         }
 
         /* Last packet? */
@@ -167,18 +169,18 @@ static void tftp_boot(uint32_t server_ip, const char *filename)
             break;
     }
 
-    tftp_close(socket);
+    tftp_pxe_close(socket);
 
     _print_str("TFTP: Downloaded ");
     print_dec32(total);
     _print_str(" bytes");
-    _print_newline();
+    print_newline();
 
     /* Jump to loaded code */
     _print_str("Booting @ 0x");
     print_hex16(BOOT_LOAD_SEG);
     _print_str("0000...");
-    _print_newline();
+    print_newline();
 
     /* Far jump to loaded code - use function pointer */
     ((void (*)(void))(BOOT_LOAD_SEG * 16))();
@@ -224,7 +226,7 @@ static void parse_vendor_options(uint8_t *data, int len)
                 print_ip(ip);
                 g_boot_info.boot_server_ip = ip;
             }
-            _print_newline();
+            print_newline();
             break;
         case RBCP_BOOT_ITEM:
             _print_str("  BootItem: ");
@@ -238,7 +240,7 @@ static void parse_vendor_options(uint8_t *data, int len)
                 g_boot_info.boot_item_type = type;
                 g_boot_info.boot_item_layer = layer;
             }
-            _print_newline();
+            print_newline();
             break;
         case RBCP_CREDENTIALS:
             _print_str("  Credentials: 0x");
@@ -248,7 +250,7 @@ static void parse_vendor_options(uint8_t *data, int len)
                 print_hex32(creds);
                 g_boot_info.cred_types = creds;
             }
-            _print_newline();
+            print_newline();
             break;
         case WDS_NEXT_ACTION:
             _print_str("  WDS Action: 0x");
@@ -258,7 +260,7 @@ static void parse_vendor_options(uint8_t *data, int len)
                 print_hex8(action);
                 g_boot_info.wds_next_action = action;
             }
-            _print_newline();
+            print_newline();
             break;
         case WDS_REQUEST_ID:
             _print_str("  WDS RequestID: 0x");
@@ -268,7 +270,7 @@ static void parse_vendor_options(uint8_t *data, int len)
                 print_hex32(rid);
                 g_boot_info.wds_request_id = rid;
             }
-            _print_newline();
+            print_newline();
             break;
         case WDS_MESSAGE:
             _print_str("  WDS Message: ");
@@ -280,12 +282,12 @@ static void parse_vendor_options(uint8_t *data, int len)
                 g_wds_message[j] = 0;
                 _print_str((char *)g_wds_message);
             }
-            _print_newline();
+            print_newline();
             break;
         default:
             _print_str("  Unknown Vendor Opt: 0x");
             print_hex8(opt);
-            _print_newline();
+            print_newline();
             break;
         }
         i += opt_len;
@@ -298,7 +300,7 @@ static void parse_dhcp_options(void)
     uint8_t len;
 
     _print_str("Parse DHCP Options...");
-    _print_newline();
+    print_newline();
 
     /* Option 60 - Vendor Class Identifier (VCI) */
     opt = find_option(g_packet_buf, sizeof(g_packet_buf), DHCP_OPT_VCI);
@@ -314,7 +316,7 @@ static void parse_dhcp_options(void)
             g_boot_info.vci[len] = 0;
             _print_str((char *)g_boot_info.vci);
         }
-        _print_newline();
+        print_newline();
     }
 
     /* Option 54 - Server Identifier */
@@ -327,7 +329,7 @@ static void parse_dhcp_options(void)
             uint32_t sip = *(uint32_t *)opt;
             print_ip(sip);
         }
-        _print_newline();
+        print_newline();
     }
 
     /* Option 67 - Bootfile Name */
@@ -344,7 +346,7 @@ static void parse_dhcp_options(void)
             g_boot_info.bootfile[len] = 0;
             _print_str((char *)g_boot_info.bootfile);
         }
-        _print_newline();
+        print_newline();
     }
 
     /* Option 17 - Root Path */
@@ -361,7 +363,7 @@ static void parse_dhcp_options(void)
             g_boot_info.root_path[len < 255 ? len : 255] = 0;
             _print_str((char *)g_boot_info.root_path);
         }
-        _print_newline();
+        print_newline();
     }
 
     /* Option 43 - Vendor Specific */
@@ -371,7 +373,7 @@ static void parse_dhcp_options(void)
         len = *opt;
         _print_str("  Option 43 (Vendor), len=");
         print_hex8(len);
-        _print_newline();
+        print_newline();
         parse_vendor_options(opt + 1, len);
     }
 }
@@ -383,13 +385,13 @@ void main(void)
     g_boot_info.signature = PXE_BOOT_INFO_SIGNATURE;
     g_boot_info.length = sizeof(pxe_boot_info_t);
 
-    _print_newline();
+    print_newline();
     _print_str("========================================");
-    _print_newline();
+    print_newline();
     _print_str("FBLipke PXE NBP v14 (stdlib)");
-    _print_newline();
+    print_newline();
     _print_str("========================================");
-    _print_newline();
+    print_newline();
 
     if (!detect_pxe())
         return;
@@ -398,24 +400,24 @@ void main(void)
 
     parse_dhcp_options();
 
-    _print_newline();
+    print_newline();
     _print_str("Action: 0x");
     print_hex8(g_boot_info.wds_next_action);
-    _print_newline();
+    print_newline();
 
     /* Debug: Zeige VCI */
     if (g_boot_info.vci[0])
     {
         _print_str("VCI: ");
         _print_str((char *)g_boot_info.vci);
-        _print_newline();
+        print_newline();
     }
 
     /* Use bootfile from DHCP or default */
     if (g_boot_info.bootfile[0] == 0)
     {
         _print_str("No bootfile in DHCP options!");
-        _print_newline();
+        print_newline();
         _print_str("Using default: boot.ipxe");
         g_boot_info.bootfile[0] = 'b';
         g_boot_info.bootfile[1] = 'o';
@@ -446,42 +448,42 @@ void main(void)
 
     _print_str("Boot Server: ");
     print_ip(g_boot_info.boot_server_ip);
-    _print_newline();
+    print_newline();
 
     _print_str("Boot File: ");
     _print_str((char *)g_boot_info.bootfile);
-    _print_newline();
+    print_newline();
 
     switch (g_boot_info.wds_next_action)
     {
     case WDS_APPROVAL:
         _print_str("=== APPROVAL - TFTP BOOT ===");
-        _print_newline();
+        print_newline();
         tftp_boot(g_boot_info.boot_server_ip, (char *)g_boot_info.bootfile);
         break;
     case WDS_REFERRAL:
         _print_str("REFERRAL - Would boot from: ");
         print_ip(g_boot_info.boot_server_ip);
-        _print_newline();
+        print_newline();
         _print_str("Boot File: ");
         _print_str((char *)g_boot_info.bootfile);
-        _print_newline();
+        print_newline();
         break;
     case WDS_ABORT:
         _print_str("ABORTED by WDS!");
-        _print_newline();
+        print_newline();
         break;
     default:
         /* Default: try to boot anyway */
         _print_str("=== TFTP BOOT (default) ===");
-        _print_newline();
+        print_newline();
         tftp_boot(g_boot_info.boot_server_ip, (char *)g_boot_info.bootfile);
         break;
     }
 
-    _print_newline();
+    print_newline();
     _print_str("Halted.");
-    _print_newline();
+    print_newline();
     for (;;)
     {
 

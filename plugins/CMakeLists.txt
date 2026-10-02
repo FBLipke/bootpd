@@ -22,6 +22,12 @@ foreach(dir ${PLUGIN_SUBDIRS})
             continue()
         endif()
         
+        # Skip NBP on non-Windows (freestanding stdlib, for PXE boot only)
+        if(plugin_name STREQUAL "nbp" AND NOT WIN32)
+            message(WARNING "Skipping NBP plugin on non-Windows platform")
+            continue()
+        endif()
+        
         message(STATUS "Found plugin: ${plugin_name}")
         
         # Check if plugin has CMakeLists.txt
