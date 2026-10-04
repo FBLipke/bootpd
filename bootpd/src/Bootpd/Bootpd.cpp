@@ -18,6 +18,17 @@ namespace bootp
 	// Static member - über IBootpd Interface zugänglich
 	std::map<_STRING, std::unique_ptr<IBootpd>> IBootpd::_subSystems;
 
+	// Global pointer for plugins to access subsystems
+	static bootpd *g_bootpd_instance = nullptr;
+
+	// Exported function for plugins
+	__LIBEXPORT IBootpd *GetBootpdSubSystem(const _STRING &id)
+	{
+		if (g_bootpd_instance)
+			return g_bootpd_instance->Get_SubSystem(id);
+		return nullptr;
+	}
+
 	bootpd::bootpd()
 	{
 	}
@@ -41,6 +52,8 @@ namespace bootp
 
 	_BOOL bootpd::Init(const _INT32 &argc, const char *argv[])
 	{
+		g_bootpd_instance = this;
+
 		this->Add_Subsys("ServiceManager", std::make_unique<bootp::Services::ServiceManager>());
 		this->Add_Subsys("ServerManager", std::make_unique<bootp::Network::ServerManager>());
 		this->Add_Subsys("ClientManager", std::make_unique<bootp::Network::ClientManager>());

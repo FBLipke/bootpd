@@ -32,6 +32,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace bootp
 {
+	class bootpd;
+
+	// Exported function for plugins to access subsystems
+	__LIBEXPORT IBootpd *GetBootpdSubSystem(const _STRING &id);
+
 	class bootpd : public IBootpd
 	{
 	public:
