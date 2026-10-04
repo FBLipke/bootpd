@@ -7,7 +7,7 @@ namespace bootp
 		PluginLoader::PluginLoader() {}
 		PluginLoader::~PluginLoader() { unload_all(); }
 
-		bool PluginLoader::load(const tinyxml2::XMLDocument &doc, const _STRING &path)
+		bool PluginLoader::load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd* parent)
 		{
 			PluginHandle handle = LoadLibraryA(path.c_str());
 
@@ -31,7 +31,7 @@ namespace bootp
 				return false;
 			}
 
-			plugin->configure(doc);
+			plugin->configure(doc, parent);
 
 			if (!plugin->on_load())
 			{
@@ -47,7 +47,7 @@ namespace bootp
 			return true;
 		}
 
-		bool PluginLoader::load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir)
+		bool PluginLoader::load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd* parent)
 		{
 
 #ifdef _WIN32
@@ -61,7 +61,7 @@ namespace bootp
 			do
 			{
 				_STRING path = dir + "\\" + find_data.cFileName;
-				load(doc, path);
+				load(doc, path, parent);
 			} while (FindNextFileA(hFind, &find_data));
 			FindClose(hFind);
 #else
@@ -80,7 +80,7 @@ namespace bootp
 				if (name.length() > 3 && name.substr(name.length() - 3) == PLUGIN_EXT)
 				{
 					_STRING path = dir + "/" + name;
-					load(doc, path);
+					load(doc, path, parent);
 				}
 			}
 			closedir(d);
@@ -168,7 +168,7 @@ namespace bootp
 		void ServiceManager::LoadPlugins(const tinyxml2::XMLDocument &doc)
 		{
 			_STRING pluginDir = Filesystem::Combine(Filesystem::CurrentDirectory(), "plugins/");
-			if (!this->pluginLoader.load_from_dir(doc, pluginDir))
+			if (!this->pluginLoader.load_from_dir(doc, pluginDir, this))
 				return;
 
 			for (const auto &name : this->pluginLoader.list())

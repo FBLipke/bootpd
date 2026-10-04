@@ -23,7 +23,7 @@ namespace bootp::Plugins::DHCP
         __LIBEXPORT void on_unload() override;
         __LIBEXPORT void on_install() override;
 
-        __LIBEXPORT void configure(const tinyxml2::XMLDocument &doc) override;
+        __LIBEXPORT void configure(const tinyxml2::XMLDocument &doc, IBootpd* parent) override;
 
         void Handle_Service_Request(const _STRING &server, const _STRING &socket,
                                     const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) override;

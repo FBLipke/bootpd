@@ -30,7 +30,6 @@ namespace bootp::Plugins::DHCP
 
 	bool DHCPService::on_load()
 	{
-
 		return this->Init();
 	}
 
@@ -43,7 +42,7 @@ namespace bootp::Plugins::DHCP
 	{
 	}
 
-	void DHCPService::configure(const tinyxml2::XMLDocument &doc)
+	void DHCPService::configure(const tinyxml2::XMLDocument &doc, IBootpd* parent)
 	{
 		auto service = doc.RootElement()->FirstChildElement("Configuration")->FirstChildElement("Services")->FirstChildElement("Service");
 
@@ -75,14 +74,7 @@ namespace bootp::Plugins::DHCP
 
 				if (ports.empty() == false)
 				{
-					auto serverMgr = GetBootpdSubSystem("ServiceManager");
-
-					if (serverMgr == nullptr)
-					{
-						printf("[E] serverMgr: Instance is not bound to an Object!\n");
-						break;
-					}
-					serverMgr->Add_Server(ports);
+					parent->Add_Server(ports);
 					break;
 				}
 			}

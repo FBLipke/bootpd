@@ -51,7 +51,7 @@ namespace bootp
         virtual void on_install() = 0;
 
         // Configuration
-        virtual void configure(const tinyxml2::XMLDocument &doc) = 0;
+        virtual void configure(const tinyxml2::XMLDocument &doc, IBootpd* parent) = 0;
     };
 
     typedef IPlugin *(*CreateFunc)();
@@ -69,10 +69,10 @@ namespace bootp
             ~PluginLoader();
 
             // Einzelne Plugin-Datei laden
-            _BOOL load(const tinyxml2::XMLDocument &doc, const _STRING &path);
+            _BOOL load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd* parent);
 
             // Alle Plugins aus Verzeichnis laden
-            _BOOL load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir);
+            _BOOL load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd* parent);
 
             // Alle Plugins entladen
             void unload_all();
