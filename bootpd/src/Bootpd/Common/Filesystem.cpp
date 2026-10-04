@@ -1,0 +1,195 @@
+/*
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "Filesystem.h"
+
+namespace bootp
+{
+    std::string Filesystem::__pathSeperatorChar()
+    {
+            std::string slash = "/";
+#ifdef _WIN32
+            slash = "\\";
+#endif // _WIN32
+            return slash;
+        }
+
+        _SIZET Filesystem::FileLength(const std::string &file)
+        {
+            _SIZET bytes = 0;
+
+            FILE *fil = fopen(file.c_str(), "rb");
+
+            if (!fil)
+                return -1;
+
+            fseek(fil, 0, SEEK_END);
+
+            bytes = ftell(fil);
+            rewind(fil);
+            fclose(fil);
+
+            return bytes;
+        }
+
+        bool Filesystem::FileExist(const std::string &filename)
+        {
+            FILE *fil = fopen(filename.c_str(), "rb");
+
+            bool res = (fil != nullptr);
+
+            if (res)
+                res = fclose(fil) == 0;
+
+            return res;
+        }
+
+        bool Filesystem::__has_endingslash(const std::string &p)
+        {
+            return p.find_last_of(Filesystem::__pathSeperatorChar(), p.size()) == p.size();
+        }
+
+        bool Filesystem::__has_startslash(const std::string &p)
+        {
+            return p.find_last_of(Filesystem::__pathSeperatorChar(), p.size()) == 0;
+        }
+
+        _SIZET Filesystem::FileRead(char *dst, _SIZET length, FILE *handle)
+        {
+            _SIZET retval = 0;
+
+            retval = fread(dst, sizeof(_BYTE), length, handle);
+
+            if (retval > 0)
+                return retval;
+
+            return 0;
+        }
+
+        bool Filesystem::WriteLeaseEntry(const std::string &filename, const std::string &ipaddress, const std::string &mac)
+        {
+            FILE *fp = fopen(filename.c_str(), "wa");
+
+            fprintf(fp, "%s;%s\n", ipaddress.c_str(), mac.c_str());
+            fclose(fp);
+
+            return true;
+        }
+
+        _SIZET Filesystem::FileWrite(const std::string &filename, const char *src, const _SIZET &length)
+        {
+            _SIZET retval = 0;
+
+            FILE *fil = fopen(filename.c_str(), "wb");
+
+            if (fil == nullptr)
+                return retval;
+
+            retval = fwrite(src, sizeof(_BYTE), length, fil);
+            fclose(fil);
+
+            return retval;
+        }
+
+        std::string Filesystem::CurrentDirectory()
+        {
+            char cCurrentPath[MAX_PATH];
+            _ClearBuffer(cCurrentPath, sizeof cCurrentPath);
+
+            _GET_CUR_WORKINGDIR(cCurrentPath, sizeof cCurrentPath);
+
+            std::string _path = std::string(cCurrentPath);
+            return _path;
+        }
+
+        std::string Filesystem::__replaceSlash(const std::string &p)
+        {
+            std::string _path = p;
+
+#ifndef _WIN32
+            _path = Functions::Replace(_path,
+                                       Filesystem::__pathSeperatorChar() + Filesystem::__pathSeperatorChar(), "/");
+#endif
+            if (_path.find_first_of("/") == 1)
+                _path = _path.substr(0);
+
+#ifdef _WIN32
+            _path = Functions::Replace(_path, "/", Filesystem::__pathSeperatorChar());
+#else
+            _path = Functions::Replace(_path, "\\\\", Filesystem::__pathSeperatorChar());
+#endif // _WIN32
+
+            return _path;
+        }
+
+        bool Filesystem::IsDirExist(const std::string &path)
+        {
+            struct _STAT info;
+
+            if (_STAT(path.c_str(), &info) != 0)
+                return false;
+
+            return (info.st_mode & S_IFDIR) != 0;
+        }
+
+        bool Filesystem::MakePath(const std::string &path)
+        {
+            _INT32 ret = -1;
+            _SIZET pos = -1;
+#ifdef _WIN32
+            ret = _mkdir(path.c_str());
+#else
+            mode_t mode = 0755;
+            ret = mkdir(path.c_str(), mode);
+#endif
+            if (ret == 0)
+                return true;
+
+            switch (errno)
+            {
+            case ENOENT:
+                pos = path.find_last_of(__pathSeperatorChar().c_str());
+                if (pos == std::string::npos)
+                    return false;
+
+                if (!MakePath(path.substr(0, pos)))
+                    return false;
+#ifdef _WIN32
+                return 0 == _mkdir(path.c_str());
+#else
+                return 0 == mkdir(path.c_str(), mode);
+#endif
+            case EEXIST:
+                return Filesystem::IsDirExist(path);
+            }
+
+            return false;
+        }
+
+        std::string Filesystem::Combine(const std::string &p1, const std::string &p2 = "")
+        {
+            std::string _path = p1;
+            std::string _p2 = p2;
+
+            if (p1.size() == 0)
+                return _p2;
+
+            if (Filesystem::__has_startslash(_p2))
+                _p2 = _p2.substr(1);
+
+            if (!Filesystem::__has_endingslash(_path))
+                _path = _path + Filesystem::__pathSeperatorChar();
+
+            return _p2.size() != 0 ? Filesystem::__replaceSlash(_path + _p2) : Filesystem::__replaceSlash(_path);
+        }
+    }

@@ -94,7 +94,8 @@ namespace bootp
             {
                 pair.second.instance->on_unload();
 
-                FreeLibrary(pair.second.handle);
+                if (pair.second.handle != nullptr)
+                    FreeLibrary(pair.second.handle);
             }
             m_plugins.clear();
         }
@@ -133,9 +134,11 @@ namespace bootp
             //TODO: Load config from other path, e.g. /etc/bootpd/config.xml
             tinyxml2::XMLDocument doc;
 
-            if (doc.LoadFile("Config/config.xml") != tinyxml2::XML_SUCCESS)
+            _STRING configPath = Filesystem::Combine(Filesystem::CurrentDirectory(), "/Config/config.xml");
+
+            if (doc.LoadFile( configPath.c_str()) != tinyxml2::XML_SUCCESS)
             {
-                printf("[E] ServiceManager: Failed to load config file: %s\n", "Config/config.xml");
+                printf("[E] ServiceManager: Failed to load config file: %s\n", configPath.c_str());
                 return false;
             }
 
@@ -164,12 +167,12 @@ namespace bootp
 
         void ServiceManager::LoadPlugins(const tinyxml2::XMLDocument &doc)
         {
-            if (!this->pluginLoader.load_from_dir(doc, "plugins/"))
+            _STRING pluginDir = Filesystem::Combine(Filesystem::CurrentDirectory(), "plugins/");
+            if (!this->pluginLoader.load_from_dir(doc, pluginDir))
                 return;
 
             for (const auto &name : this->pluginLoader.list())
             {
-                printf("%s\n", name.c_str());
                 auto plugin = this->pluginLoader.find(name);
                 this->services.insert(std::make_pair(name, std::unique_ptr<IPlugin>(plugin)));
             }

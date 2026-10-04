@@ -10,7 +10,7 @@ namespace bootp::Plugins::DHCP
     public:
         static IPlugin *create() { return new DHCPService(); }
         // IPlugin interface
-        std::string name() const override { return "DHCP"; }
+        std::string name() const override { return "DHCPService"; }
         PluginType type() const override { return PluginType::NETWORK; }
         int priority() const override { return 100; }
 

@@ -12,7 +12,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Bootpd.h"
-#include "Network/Interface/IPacket.h"
 
 namespace bootp
 {
@@ -39,8 +38,6 @@ namespace bootp
 
 	_BOOL bootpd::Init(const _INT32 &argc, const char *argv[])
 	{
-
-		// Subsystems hinzufügen
 		this->Add_Subsys("ServiceManager", std::make_unique<bootp::Services::ServiceManager>());
 		this->Add_Subsys("ServerManager", std::make_unique<bootp::Network::ServerManager>());
 		this->Add_Subsys("ClientManager", std::make_unique<bootp::Network::ClientManager>());

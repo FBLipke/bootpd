@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../thirdparty/tinyxml2/tinyxml2.h"
 #include "Common/Environment.h"
 #include "Common/Functions.h"
+#include "Common/Filesystem.h"
 #include "Network/Interface/IPacket.h"
 #include "Interface/IBootpd.h"
 #include "Network/Packet/Packet.h"

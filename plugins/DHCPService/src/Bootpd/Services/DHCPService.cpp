@@ -52,7 +52,7 @@ namespace bootp::Plugins::DHCP
         {
             auto type = std::string(service->Attribute("type"));
 
-            if (type.compare("DHCPService") == 0)
+            if (type.compare(this->name()) == 0)
             {
                 auto ports = Functions::Split_USHORT(service->Attribute("port"), ';');
                 auto mcaddr = service->Attribute("mcaddr");
