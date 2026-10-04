@@ -54,7 +54,6 @@ if(WIN32)
 target_link_libraries(bootpd_core PRIVATE Ws2_32.lib Rpcrt4.lib)
 endif()
 
-
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
 
@@ -72,10 +71,11 @@ list(FIND ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Pack
 if(NOT ${_idx} EQUAL -1)
 list(REMOVE_ITEM ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Packet.cpp")
 endif()
+
 add_library(tinyxml2_lib STATIC ${CMAKE_SOURCE_DIR}/thirdparty/tinyxml2/tinyxml2.cpp)
 
 add_executable(bootpd ${ALL_SOURCES})
-set_target_properties(bootpd PROPERTIES LINK_FLAGS "-rdynamic")
+set_target_properties(bootpd PROPERTIES ENABLE_EXPORTS ON LINK_FLAGS "-rdynamic")
 
 target_include_directories(bootpd PRIVATE
 ${CMAKE_SOURCE_DIR}/bootpd/src

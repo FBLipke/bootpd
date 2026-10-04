@@ -11,7 +11,7 @@ case "${1:-build}" in
     *)
         rm -rf build
         cmake -S . -B build
-        
+
         # Kein Argument = alles bauen
         if [ -z "$1" ]; then
             cmake --build build
@@ -19,7 +19,7 @@ case "${1:-build}" in
             # Plugin specified?
             cmake --build build --target "$1"
         fi
-        
+
         rm -rf build
         echo "Build complete: bin/"
         ;;

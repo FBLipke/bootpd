@@ -5,15 +5,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE PLUGIN_SOURCES CONFIGURE_DEPENDS "*.cpp")
 
-# Include Functions.cpp directly in this plugin (Windows workaround)
-list(APPEND PLUGIN_SOURCES
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Functions.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Filesystem.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Environment.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/DatabaseConfig.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/SQLiteDatabase.cpp
-)
-
 add_library(DHCPService SHARED ${PLUGIN_SOURCES})
 
 target_include_directories(DHCPService PUBLIC

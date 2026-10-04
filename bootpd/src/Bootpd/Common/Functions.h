@@ -12,28 +12,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-#include "../Bootpd.h"
+#include "Environment.h"
 namespace bootp
 {
-class Functions
-{
-public:
-	static _STRING GenerateUUID();
-	static void __memcpy(void *dst, const void *src, const _SIZET &length);
+	class Functions
+	{
+	public:
+		static _STRING GenerateUUID();
+		static void __memcpy(void *dst, const void *src, const _SIZET &length);
 
-	static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
-    static std::string __inet_ntoa(const _IPADDR &ip, const _INT32 &family);
-    static _USHORT AsUSHORT(const char *input);
-    static std::string Get_Hostname();
-    static std::vector<_USHORT> Split_USHORT(const std::string &s, char delimiter);
-    static std::string MacAsString(char *macBuffer);
-    static _INT32 RoundToInteger(double value);
-    static std::vector<std::string> Split(const std::string &str, const std::string &token);
-    static bool Compare(const char *p1, const char *p2, const _SIZET &length);
-    static std::string Replace(std::string &str, const std::string &from, const std::string &to);
-    static bool CompareIPAddress(const _IPADDR &ip1, const _IPADDR &ip2, const _SIZET &length);
-    static std::string AsString(const _SIZET &input);
-    static void ExtractString(const char *buf, const _SIZET &size, char *out);
-    static _SIZET Strip(const char *buffer, const _SIZET buflen);
-};
+		static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
+		static std::string __inet_ntoa(const _IPADDR &ip, const _INT32 &family);
+		static _USHORT AsUSHORT(const char *input);
+		static std::string Get_Hostname();
+		static std::vector<_USHORT> Split_USHORT(const std::string &s, char delimiter);
+		static std::string MacAsString(char *macBuffer);
+		static _INT32 RoundToInteger(double value);
+		static std::vector<std::string> Split(const std::string &str, const std::string &token);
+		static bool Compare(const char *p1, const char *p2, const _SIZET &length);
+		static std::string Replace(std::string &str, const std::string &from, const std::string &to);
+		static bool CompareIPAddress(const _IPADDR &ip1, const _IPADDR &ip2, const _SIZET &length);
+		static std::string AsString(const _SIZET &input);
+		static void ExtractString(const char *buf, const _SIZET &size, char *out);
+		static _SIZET Strip(const char *buffer, const _SIZET buflen);
+	};
 }
