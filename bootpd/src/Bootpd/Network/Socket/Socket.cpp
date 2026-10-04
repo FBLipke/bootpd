@@ -18,6 +18,7 @@ namespace bootp
 			this->socketType = SOCK_DGRAM;
 
 			this->_sock = socket(af, this->socketType, this->proto);
+			printf("[D] Socket: socket() returned %d, WSA error=%d\n", this->_sock, WSAGetLastError());
 			memset(&this->_local, 0, sizeof this->_local);
 			this->_local.sin_addr.s_addr = this->address;
 			this->_local.sin_port = this->port;
