@@ -16,7 +16,7 @@ target_link_libraries(DHCPService PRIVATE PacketLib tinyxml2_lib)
 add_dependencies(DHCPService PacketLib tinyxml2_lib)
 
 if(WIN32)
-target_link_libraries(DHCPService PRIVATE Ws2_32.lib)
+target_link_libraries(DHCPService PRIVATE Ws2_32.lib tinyxml2_lib)
 endif()
 
 set_target_properties(DHCPService PROPERTIES
