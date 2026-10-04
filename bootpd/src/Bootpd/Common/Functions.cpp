@@ -14,6 +14,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Functions.h"
 namespace bootp
 {
+	// Exported wrapper for plugins - static class members can't cross DLL boundaries on Windows
+	std::vector<_USHORT> SplitUSHORT_Export(const std::string &s, char delimiter)
+	{
+		return Functions::Split_USHORT(s, delimiter);
+	}
+
 	_STRING Functions::GenerateUUID()
 	{
 		_STRING result = "";

@@ -53,7 +53,7 @@ namespace bootp::Plugins::DHCP
 
 			if (type.compare(this->name()) == 0)
 			{
-				auto ports = Functions::Split_USHORT(service->Attribute("port"), ';');
+				auto ports = SplitUSHORT_Export(service->Attribute("port"), ';');
 				auto mcaddr = service->Attribute("mcaddr");
 				auto mccport = service->Attribute("mccport");
 				auto mcsport = service->Attribute("mcsport");
@@ -68,7 +68,7 @@ namespace bootp::Plugins::DHCP
 
 				if (ports.empty() == false)
 				{
-					auto serverMgr = bootp::bootpd::Get_SubSystem("ServiceManager");
+					auto serverMgr = GetBootpdSubSystem("ServiceManager");
 
 					if (serverMgr == nullptr)
 					{

@@ -13,6 +13,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 #include "Environment.h"
+
+// Exported wrapper for plugins - static class members can't cross DLL boundaries on Windows
+__LIBEXPORT std::vector<_USHORT> SplitUSHORT_Export(const std::string &s, char delimiter);
+
 namespace bootp
 {
 	class Functions
