@@ -44,6 +44,10 @@ namespace bootp
 
 			return true;
 		}
+		void ClientManager::Add_Server(const std::vector<_USHORT> &ports)
+		{
+
+		}
 
 		_BOOL ClientManager::Start()
 		{

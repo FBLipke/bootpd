@@ -23,7 +23,7 @@ namespace bootp
 		public:
 			Server(const _STRING &id);
 			~Server();
-			void Init();
+			void Init(const std::vector<_USHORT> &ports);
 			void Start();
 			void Listen();
 			void HeartBeat();

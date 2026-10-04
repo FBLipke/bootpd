@@ -3,18 +3,18 @@
     "configurations": [
         {
             "name": "bootpd Debug",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/bootpd.exe",
+            "program": "${workspaceFolder}/bin/Debug/bootpd",
             "args": [],
             "cwd": "${workspaceFolder}/bin/Debug",
             "environment": [],
         },
         {
             "name": "bootpd Release",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Release/bootpd.exe",
+            "program": "${workspaceFolder}/bin/Release/bootpd",
             "args": [],
             "cwd": "${workspaceFolder}/bin/Release",
             "environment": [],

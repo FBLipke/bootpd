@@ -56,7 +56,7 @@ typedef void *PluginHandle;
 #define _select(n, r, w, e, t) pselect(n, r, w, e, t, nullptr);
 #define FreeLibrary(handle) dlclose(handle);
 #define GetProcAddress(x, y) dlsym(x, y);
-#define LoadLibraryA(x) dlopen(x, RTLD_NOW);
+#define LoadLibraryA(x) dlopen(x, RTLD_NOW | RTLD_GLOBAL);
 
 #endif /* ENVIRONMENT_ENVIRONMENT_LINUX_H_ */
 #endif

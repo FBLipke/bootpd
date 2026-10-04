@@ -1,6 +1,6 @@
-#pragma once
-#include "../Bootpd.h"
 
+#include "../Bootpd.h"
+#pragma once
 namespace bootp::Plugins::DHCP
 {
     enum class Architecture : _USHORT
@@ -90,5 +90,5 @@ namespace bootp::Plugins::DHCP
         Hw_exp2 = 256,
         Aethernet = 257,
         Reserved_65535 = 65535
-    } t;
+    };
 }

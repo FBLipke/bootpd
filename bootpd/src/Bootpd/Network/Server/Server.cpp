@@ -26,15 +26,11 @@ namespace bootp
 		{
 		}
 
-		void Server::Init()
+		void Server::Init(const std::vector<_USHORT> &ports)
 		{
 
 			_IPADDR address = 0;
 			std::vector<_IPADDR> addresses;
-
-			std::vector<_USHORT> ports;
-			ports.emplace_back(67);
-			ports.emplace_back(4011);
 
 			_USHORT index = 0;
 			printf("[D] Server[%s] -> Init()\n", this->id.c_str());

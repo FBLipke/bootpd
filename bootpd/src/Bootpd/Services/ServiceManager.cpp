@@ -7,13 +7,13 @@ namespace bootp
         PluginLoader::PluginLoader() {}
         PluginLoader::~PluginLoader() { unload_all(); }
 
-        bool PluginLoader::load(const _STRING &path)
+        bool PluginLoader::load(const tinyxml2::XMLDocument &doc, const _STRING &path)
         {
             PluginHandle handle = LoadLibraryA(path.c_str());
 
             if (!handle)
             {
-                FreeLibrary(handle);
+                printf("[E] PluginLoader: Failed to load plugin: %s -> %s\n", path.c_str(), dlerror());
                 return false;
             }
 
@@ -31,13 +31,13 @@ namespace bootp
                 return false;
             }
 
+            plugin->configure(doc);
+
             if (!plugin->on_load())
             {
                 FreeLibrary(handle);
                 return false;
             }
-
-            plugin->on_install();
 
             PluginEntry entry;
             entry.handle = handle;
@@ -47,7 +47,7 @@ namespace bootp
             return true;
         }
 
-        bool PluginLoader::load_from_dir(const _STRING &dir)
+        bool PluginLoader::load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir)
         {
 
 #ifdef _WIN32
@@ -61,7 +61,7 @@ namespace bootp
             do
             {
                 _STRING path = dir + "\\" + find_data.cFileName;
-                load(path);
+                load(doc, path);
             } while (FindNextFileA(hFind, &find_data));
             FindClose(hFind);
 #else
@@ -80,7 +80,7 @@ namespace bootp
                 if (name.length() > 3 && name.substr(name.length() - 3) == PLUGIN_EXT)
                 {
                     _STRING path = dir + "/" + name;
-                    load(path);
+                    load(doc, path);
                 }
             }
             closedir(d);
@@ -130,7 +130,16 @@ namespace bootp
                     service.second.get()->Handle_Service_Request(server_id, socket_id, id, request);
             };
 
-            this->LoadPlugins();
+            //TODO: Load config from other path, e.g. /etc/bootpd/config.xml
+            tinyxml2::XMLDocument doc;
+
+            if (doc.LoadFile("Config/config.xml") != tinyxml2::XML_SUCCESS)
+            {
+                printf("[E] ServiceManager: Failed to load config file: %s\n", "Config/config.xml");
+                return false;
+            }
+
+            this->LoadPlugins(doc);
 
             return true;
         }
@@ -143,15 +152,19 @@ namespace bootp
             return true;
         }
 
+        void ServiceManager::Add_Server(const std::vector<_USHORT> &ports)
+        {
+        }
+
         void ServiceManager::HeartBeat()
         {
             for (const auto &service : this->services)
                 service.second.get()->HeartBeat();
         }
 
-        void ServiceManager::LoadPlugins()
+        void ServiceManager::LoadPlugins(const tinyxml2::XMLDocument &doc)
         {
-            if (!this->pluginLoader.load_from_dir("plugins/"))
+            if (!this->pluginLoader.load_from_dir(doc, "plugins/"))
                 return;
 
             for (const auto &name : this->pluginLoader.list())

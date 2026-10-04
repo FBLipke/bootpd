@@ -8,3 +8,8 @@ Debug/
 .alinainfo
 *.obj
 *.o
+*.rom
+*.so
+*.out
+*.a
+*.pem

@@ -12,6 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
+#include "../thirdparty/tinyxml2/tinyxml2.h"
 #include "Common/Environment.h"
 #include "Common/Functions.h"
 #include "Network/Interface/IPacket.h"
@@ -27,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Services/ServiceManager.h"
 #include "Network/ClientManager.h"
 
-#include "../thirdparty/tinyxml2/tinyxml2.h"
+
 namespace bootp
 {
 	class bootpd : public IBootpd
@@ -38,9 +39,11 @@ namespace bootp
 
 		void Add_Subsys(const _STRING &str, std::unique_ptr<IBootpd> subsys);
 
-		IBootpd *Get_SubSystem(const _STRING &id);
+		static IBootpd *Get_SubSystem(const _STRING &id);
 
 		_BOOL Init(const _INT32 &argc, const char *argv[]) override;
+
+		void Add_Server(const std::vector<_USHORT> &ports) override;
 
 		_BOOL Start() override;
 

@@ -36,6 +36,8 @@ namespace bootp
 			std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> Handle_Manager_Request;
 			std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> Handle_Manager_Response;
 
+			void Add_Server(const std::vector<_USHORT> &ports) override;
+
 		private:
 #ifdef WIN32
 			WSADATA wsa;

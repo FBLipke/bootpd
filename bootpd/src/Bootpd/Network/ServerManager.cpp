@@ -36,12 +36,8 @@ namespace bootp::Network
 	{
 	}
 
-	_BOOL ServerManager::Init(const _INT32 &argc, const char *argv[])
+	void ServerManager::Add_Server(const std::vector<_USHORT> &ports)
 	{
-		printf("[D] Bootpd - ServerMgr...\n");
-#ifdef WIN32
-		Init_Winsock(2, 0);
-#endif
 		auto _id = Functions::GenerateUUID();
 		this->servers.emplace(_id, std::make_unique<bootp::Network::Server>(_id));
 
@@ -56,8 +52,19 @@ namespace bootp::Network
 					this->Handle_Manager_Request(server_id, socket_id, request, ip, port, client);
 			};
 
-			srv->Init();
+			srv->Init(ports);
+			srv->Start();
+			srv->Listen();
 		}
+	}
+
+	_BOOL ServerManager::Init(const _INT32 &argc, const char *argv[])
+	{
+		printf("[D] Bootpd - ServerMgr...\n");
+#ifdef WIN32
+		Init_Winsock(2, 0);
+#endif
+
 
 		return true;
 	}

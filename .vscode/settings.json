@@ -30,5 +30,20 @@
     "workbench.editor.languageDetection": true,
     "workbench.activityBar.autoHide": true,
     "workbench.preferredDarkColorTheme": "Atom One Light",
-    "workbench.preferredLightColorTheme": "Atom One Light"
+    "workbench.preferredLightColorTheme": "Atom One Light",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "workbench.sideBar.location": "right",
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.closeEmptyGroups": false,
+    "workbench.editor.closeOnFileDelete": false,
+    "workbench.editor.revealIfOpen": true,
+    "workbench.editor.labelFormat": "default",
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.showTabs": "multiple",
+    "workbench.editor.tabCloseButton": "on"
+
 }

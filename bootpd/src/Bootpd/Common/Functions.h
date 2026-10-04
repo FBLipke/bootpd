@@ -21,6 +21,6 @@ public:
 	static void __memcpy(void *dst, const void *src, const _SIZET &length);
 
 	static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
-
-private:
+	static std::vector<_USHORT> Split_USHORT(const std::string &s, char delimiter);
+	private:
 };

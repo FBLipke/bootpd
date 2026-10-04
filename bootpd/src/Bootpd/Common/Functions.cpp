@@ -62,7 +62,23 @@ void Functions::__memcpy(void *dst, const void *src, const _SIZET &length)
               static_cast<char *>(dst));
 }
 
+std::vector<_USHORT> Functions::Split_USHORT(const std::string &s, char delimiter)
+{
+    std::vector<_USHORT> tokens;
+    std::string token;
+    std::istringstream iss(s);
+
+    while (std::getline(iss, token, delimiter))
+    {
+        auto value = std::stoi(token);
+        if (value <= std::numeric_limits<_USHORT>::max())
+            tokens.push_back(static_cast<_USHORT>(value));
+    }
+
+    return tokens;
+}
+
 _INT32 Functions::__inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr)
 {
-    return inet_pton(AF_INET, ip_str.c_str(), &addr);
+    return inet_pton(AF_INET, ip_str.c_str(), addr);
 }

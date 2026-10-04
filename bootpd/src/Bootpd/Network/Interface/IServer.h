@@ -21,7 +21,7 @@ namespace bootp
 		class IServer
 		{
 		public:
-			virtual void Init() = 0;
+			virtual void Init(const std::vector<_USHORT> &ports) = 0;
 			virtual void Start() = 0;
 			virtual void Listen() = 0;
 			virtual void HeartBeat() = 0;

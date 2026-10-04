@@ -1,9 +1,8 @@
 #pragma once
 #include "../Bootpd.h"
-// IPlugin basis class from CMake include dirs: ${CMAKE_SOURCE_DIR}/bootpd/src
 #include <Bootpd/Services/ServiceManager.h>
 
-namespace bootp::Plugins
+namespace bootp::Plugins::DHCP
 {
 
     class DHCPService : public IPlugin
@@ -24,7 +23,7 @@ namespace bootp::Plugins
         __LIBEXPORT void on_unload() override;
         __LIBEXPORT void on_install() override;
 
-        __LIBEXPORT void configure(const std::string &key, const std::string &value) override;
+        __LIBEXPORT void configure(const tinyxml2::XMLDocument &doc) override;
 
         void Handle_Service_Request(const _STRING &server, const _STRING &socket,
                                     const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) override;

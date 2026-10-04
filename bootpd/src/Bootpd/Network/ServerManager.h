@@ -31,6 +31,7 @@ namespace bootp::Network
 
 		_BOOL Start();
 
+		void Add_Server(const std::vector<_USHORT> &ports);
 		void HeartBeat();
 
 		void Close();
