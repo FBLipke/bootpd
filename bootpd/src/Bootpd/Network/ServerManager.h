@@ -27,13 +27,13 @@ namespace bootp::Network
 		_BOOL Close_Winsock();
 #endif
 
-		_BOOL Init(const _INT32 &argc, const char *argv[]);
+		_BOOL Init(IBootpd *, const _INT32 &argc, const char *argv[]);
 
 		_BOOL Start();
 
 		void Add_Server(const std::vector<_USHORT> &ports);
 		void HeartBeat();
-
+		IBootpd *Get_SubSystem(const _STRING &id) override;
 		void Close();
 
 		std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> Handle_Manager_Request;

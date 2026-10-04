@@ -42,7 +42,7 @@ namespace bootp::Plugins::DHCP
 	{
 	}
 
-	void DHCPService::configure(const tinyxml2::XMLDocument &doc, IBootpd* parent)
+	void DHCPService::configure(const tinyxml2::XMLDocument &doc, IBootpd *parent)
 	{
 		auto service = doc.RootElement()->FirstChildElement("Configuration")->FirstChildElement("Services")->FirstChildElement("Service");
 
@@ -57,7 +57,8 @@ namespace bootp::Plugins::DHCP
 				std::string port_str = service->Attribute("port");
 				std::string token;
 				std::istringstream iss(port_str);
-				while (std::getline(iss, token, ';')) {
+				while (std::getline(iss, token, ';'))
+				{
 					ports.push_back(static_cast<_USHORT>(std::stoi(token)));
 				}
 				auto mcaddr = service->Attribute("mcaddr");
@@ -74,7 +75,7 @@ namespace bootp::Plugins::DHCP
 
 				if (ports.empty() == false)
 				{
-					parent->Add_Server(ports);
+					parent->Get_SubSystem("ServerManager")->Add_Server(ports);
 					break;
 				}
 			}

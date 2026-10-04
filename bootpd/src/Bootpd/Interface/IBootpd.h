@@ -14,21 +14,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace bootp
 {
-    class IPacket;
+	class IPacket;
 
-    class IBootpd
-    {
-    public:
-        virtual _BOOL Init(const _INT32 &argc, const char *argv[]) = 0;
-        virtual _BOOL Start() = 0;
-        virtual void HeartBeat() = 0;
-        virtual void Close() = 0;
+	class IBootpd
+	{
+	public:
+		virtual _BOOL Init(IBootpd *parent, const _INT32 &argc, const char *argv[]) = 0;
+		virtual _BOOL Start() = 0;
+		virtual void HeartBeat() = 0;
+		virtual void Close() = 0;
+		virtual IBootpd *Get_SubSystem(const _STRING &id) = 0;
+		virtual void Add_Server(const std::vector<_USHORT> &ports) = 0;
 
-        virtual void Add_Server(const std::vector<_USHORT> &ports) = 0;
-
-        // Statische SubSysteme - für alle Manager zugänglich
-        static std::map<_STRING, std::unique_ptr<IBootpd>> _subSystems;
-        std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &)> Handle_Manager_Request;
-        std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &)> Handle_Manager_Response;
-    };
+		// Statische SubSysteme - für alle Manager zugänglich
+		static std::map<_STRING, std::unique_ptr<IBootpd>> _subSystems;
+		std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &)> Handle_Manager_Request;
+		std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &)> Handle_Manager_Response;
+	};
 }

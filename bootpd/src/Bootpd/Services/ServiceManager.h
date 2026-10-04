@@ -16,102 +16,104 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace bootp
 {
-    enum class PluginType
-    {
-        CORE,    // DHCP, TFTP
-        SERVICE, // WDS, RIS, BSDP
-        NETWORK,
-        OTHER
-    };
+	enum class PluginType
+	{
+		CORE,	 // DHCP, TFTP
+		SERVICE, // WDS, RIS, BSDP
+		NETWORK,
+		OTHER
+	};
 
-    /*
-     * IPlugin - Base Interface für alle Plugins
-     */
-    class IPlugin
-    {
-    public:
-        virtual ~IPlugin() = default;
+	/*
+	 * IPlugin - Base Interface für alle Plugins
+	 */
+	class IPlugin
+	{
+	public:
+		virtual ~IPlugin() = default;
 
-        // Plugin Info
-        virtual _STRING name() const = 0;
-        virtual PluginType type() const = 0;
-        virtual _INT32 priority() const = 0; // Load order
+		// Plugin Info
+		virtual _STRING name() const = 0;
+		virtual PluginType type() const = 0;
+		virtual _INT32 priority() const = 0; // Load order
 
-        // Plugin Instance
-        virtual _BOOL Init() = 0;
-        virtual _BOOL Start() = 0;
-        virtual void HeartBeat() = 0;
-        virtual void Close() = 0;
+		// Plugin Instance
+		virtual _BOOL Init() = 0;
+		virtual _BOOL Start() = 0;
+		virtual void HeartBeat() = 0;
+		virtual void Close() = 0;
 
-        virtual void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) = 0;
+		virtual void Handle_Service_Request(const _STRING &server, const _STRING &socket, const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) = 0;
 
-        // Lifecycle
-        virtual _BOOL on_load() = 0;
-        virtual void on_unload() = 0;
-        virtual void on_install() = 0;
+		// Lifecycle
+		virtual _BOOL on_load() = 0;
+		virtual void on_unload() = 0;
+		virtual void on_install() = 0;
 
-        // Configuration
-        virtual void configure(const tinyxml2::XMLDocument &doc, IBootpd* parent) = 0;
-    };
+		// Configuration
+		virtual void configure(const tinyxml2::XMLDocument &doc, IBootpd *parent) = 0;
+	};
 
-    typedef IPlugin *(*CreateFunc)();
+	typedef IPlugin *(*CreateFunc)();
 
-    // Diese Funktion MUSS in jeder Plugin-DLL exportiert werden
-    bootp::IPlugin *create_plugin();
+	// Diese Funktion MUSS in jeder Plugin-DLL exportiert werden
+	bootp::IPlugin *create_plugin();
 
-    namespace Services
-    {
+	namespace Services
+	{
 
-        class PluginLoader
-        {
-        public:
-            PluginLoader();
-            ~PluginLoader();
+		class PluginLoader
+		{
+		public:
+			PluginLoader();
+			~PluginLoader();
 
-            // Einzelne Plugin-Datei laden
-            _BOOL load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd* parent);
+			// Einzelne Plugin-Datei laden
+			_BOOL load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd *parent);
 
-            // Alle Plugins aus Verzeichnis laden
-            _BOOL load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd* parent);
+			// Alle Plugins aus Verzeichnis laden
+			_BOOL load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd *parent);
 
-            // Alle Plugins entladen
-            void unload_all();
+			// Alle Plugins entladen
+			void unload_all();
 
-            // Plugin nach Namen finden
-            bootp::IPlugin *find(const _STRING &name);
+			// Plugin nach Namen finden
+			bootp::IPlugin *find(const _STRING &name);
 
-            // Anzahl geladener Plugins
-            _SIZET count() const { return m_plugins.size(); }
+			// Anzahl geladener Plugins
+			_SIZET count() const { return m_plugins.size(); }
 
-            // Plugin-Liste
-            std::vector<_STRING> list() const;
+			// Plugin-Liste
+			std::vector<_STRING> list() const;
 
-        private:
-            struct PluginEntry
-            {
-                PluginHandle handle;
-                std::unique_ptr<bootp::IPlugin> instance;
-            };
+		private:
+			struct PluginEntry
+			{
+				PluginHandle handle;
+				std::unique_ptr<bootp::IPlugin> instance;
+			};
 
-            std::map<_STRING, PluginEntry> m_plugins;
-        };
+			std::map<_STRING, PluginEntry> m_plugins;
+		};
 
-        class ServiceManager : public IBootpd
-        {
-        public:
-            ServiceManager();
-            ~ServiceManager();
+		class ServiceManager : public IBootpd
+		{
+		public:
+			ServiceManager();
+			~ServiceManager();
 
-            _BOOL Init(const _INT32 &argc, const char *argv[]);
-            _BOOL Start();
-            void HeartBeat();
-            void LoadPlugins(const tinyxml2::XMLDocument &doc);
-            void Close();
-            void Add_Server(const std::vector<_USHORT> &ports) override;
+			_BOOL Init(IBootpd *, const _INT32 &argc, const char *argv[]);
+			_BOOL Start();
+			void HeartBeat();
+			void LoadPlugins(const tinyxml2::XMLDocument &doc);
+			void Close();
+			void Add_Server(const std::vector<_USHORT> &ports);
+			IBootpd *Get_SubSystem(const _STRING &id) override;
 
-        private:
-            PluginLoader pluginLoader;
-            std::map<const _STRING, std::unique_ptr<bootp::IPlugin>> services;
-        };
-    }
+		private:
+			IBootpd *parent;
+			PluginLoader pluginLoader;
+			std::map<const _STRING, std::unique_ptr<bootp::IPlugin>> services;
+		};
+	}
 }

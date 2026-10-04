@@ -58,13 +58,12 @@ namespace bootp::Network
 		}
 	}
 
-	_BOOL ServerManager::Init(const _INT32 &argc, const char *argv[])
+	_BOOL ServerManager::Init(IBootpd *, const _INT32 &argc, const char *argv[])
 	{
 		printf("[D] Bootpd - ServerMgr...\n");
 #ifdef WIN32
 		Init_Winsock(2, 0);
 #endif
-
 
 		return true;
 	}
@@ -84,6 +83,11 @@ namespace bootp::Network
 	{
 		for (const auto &s : this->servers)
 			s.second.get()->HeartBeat();
+	}
+
+	IBootpd *ServerManager::Get_SubSystem(const _STRING &id)
+	{
+		return nullptr;
 	}
 
 	void ServerManager::Close()

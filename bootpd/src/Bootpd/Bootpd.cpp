@@ -24,11 +24,11 @@ namespace bootp
 	// Exported function for plugins
 	__LIBEXPORT IBootpd *GetBootpdSubSystem(const _STRING &id)
 	{
-		printf("[D] GetBootpdSubSystem('%s') called - g_bootpd_instance=%p\n", id.c_str(), (void*)g_bootpd_instance);
+		printf("[D] GetBootpdSubSystem('%s') called - g_bootpd_instance=%p\n", id.c_str(), (void *)g_bootpd_instance);
 		if (g_bootpd_instance)
 		{
 			auto result = g_bootpd_instance->Get_SubSystem(id);
-			printf("[D] GetBootpdSubSystem('%s') returning %p\n", id.c_str(), (void*)result);
+			printf("[D] GetBootpdSubSystem('%s') returning %p\n", id.c_str(), (void *)result);
 			return result;
 		}
 		printf("[E] GetBootpdSubSystem - g_bootpd_instance is NULL!\n");
@@ -56,7 +56,7 @@ namespace bootp
 		return nullptr;
 	}
 
-	_BOOL bootpd::Init(const _INT32 &argc, const char *argv[])
+	_BOOL bootpd::Init(IBootpd *parent, const _INT32 &argc, const char *argv[])
 	{
 		g_bootpd_instance = this;
 
@@ -67,7 +67,7 @@ namespace bootp
 		// ERST: Alle Init() aufrufen
 		for (const auto &s : IBootpd::_subSystems)
 		{
-			s.second.get()->Init(argc, argv);
+			s.second.get()->Init(this, argc, argv);
 		}
 
 		// DANN: ServerManager.HandleManager_Request auf ServiceManager.HandleManager_Request verbinden

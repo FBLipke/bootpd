@@ -25,7 +25,7 @@ namespace bootp
 		{
 		}
 
-		_BOOL ClientManager::Init(const _INT32 &argc, const char *argv[])
+		_BOOL ClientManager::Init(IBootpd *, const _INT32 &argc, const char *argv[])
 		{
 			printf("[D] Bootpd - ClientMgr...\n");
 
@@ -44,9 +44,12 @@ namespace bootp
 
 			return true;
 		}
+		IBootpd *ClientManager::Get_SubSystem(const _STRING &id)
+		{
+			return nullptr;
+		}
 		void ClientManager::Add_Server(const std::vector<_USHORT> &ports)
 		{
-
 		}
 
 		_BOOL ClientManager::Start()

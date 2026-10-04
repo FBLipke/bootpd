@@ -7,7 +7,7 @@ namespace bootp
 		PluginLoader::PluginLoader() {}
 		PluginLoader::~PluginLoader() { unload_all(); }
 
-		bool PluginLoader::load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd* parent)
+		bool PluginLoader::load(const tinyxml2::XMLDocument &doc, const _STRING &path, IBootpd *parent)
 		{
 			PluginHandle handle = LoadLibraryA(path.c_str());
 
@@ -47,7 +47,7 @@ namespace bootp
 			return true;
 		}
 
-		bool PluginLoader::load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd* parent)
+		bool PluginLoader::load_from_dir(const tinyxml2::XMLDocument &doc, const _STRING &dir, IBootpd *parent)
 		{
 
 #ifdef _WIN32
@@ -118,9 +118,9 @@ namespace bootp
 			return names;
 		}
 
-		bool ServiceManager::Init(const _INT32 &argc, const char *argv[])
+		bool ServiceManager::Init(IBootpd *parent, const _INT32 &argc, const char *argv[])
 		{
-
+			this->parent = parent;
 			printf("[D] Bootpd - ServiceMgr...\n");
 
 			this->Handle_Manager_Request = [&](const _STRING &server_id, const _STRING &socket_id,
@@ -159,6 +159,11 @@ namespace bootp
 		{
 		}
 
+		IBootpd *ServiceManager::Get_SubSystem(const _STRING &id)
+		{
+			return nullptr;
+		}
+
 		void ServiceManager::HeartBeat()
 		{
 			for (const auto &service : this->services)
@@ -168,7 +173,7 @@ namespace bootp
 		void ServiceManager::LoadPlugins(const tinyxml2::XMLDocument &doc)
 		{
 			_STRING pluginDir = Filesystem::Combine(Filesystem::CurrentDirectory(), "plugins/");
-			if (!this->pluginLoader.load_from_dir(doc, pluginDir, this))
+			if (!this->pluginLoader.load_from_dir(doc, pluginDir, this->parent))
 				return;
 
 			for (const auto &name : this->pluginLoader.list())

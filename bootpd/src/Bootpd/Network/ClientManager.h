@@ -24,7 +24,7 @@ namespace bootp
 			ClientManager();
 			~ClientManager();
 
-			_BOOL Init(const _INT32 &argc, const char *argv[]);
+			_BOOL Init(IBootpd *, const _INT32 &argc, const char *argv[]);
 
 			_BOOL Start();
 
@@ -35,7 +35,7 @@ namespace bootp
 			std::function<void(const _STRING &id)> Remove;
 			std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> Handle_Manager_Request;
 			std::function<void(const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &client)> Handle_Manager_Response;
-
+			IBootpd *Get_SubSystem(const _STRING &id) override;
 			void Add_Server(const std::vector<_USHORT> &ports) override;
 
 		private:

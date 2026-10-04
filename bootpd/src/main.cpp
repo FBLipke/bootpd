@@ -15,14 +15,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace bootp;
 
-void _heartbeat(IBootpd* _instance)
+void _heartbeat(IBootpd *_instance)
 {
 	auto str = std::string("");
 	while (str != "!exit")
 	{
 		std::this_thread::sleep_for(
 			std::chrono::milliseconds(30000));
-		
+
 		if (_instance == nullptr)
 			continue;
 
@@ -30,11 +30,11 @@ void _heartbeat(IBootpd* _instance)
 	}
 }
 
-int main(const int argc, const char* argv[])
+int main(const int argc, const char *argv[])
 {
 	auto _bootpd = std::make_shared<bootp::bootpd>();
 
-	if (!_bootpd.get()->Init(argc, argv))
+	if (!_bootpd.get()->Init(nullptr, argc, argv))
 		return 1;
 
 	if (!_bootpd.get()->Start())
@@ -49,5 +49,3 @@ int main(const int argc, const char* argv[])
 
 	return 0;
 }
-
-

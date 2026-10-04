@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Services/ServiceManager.h"
 #include "Network/ClientManager.h"
 
-
 namespace bootp
 {
 	class bootpd;
@@ -45,9 +44,9 @@ namespace bootp
 
 		void Add_Subsys(const _STRING &str, std::unique_ptr<IBootpd> subsys);
 
-		static IBootpd *Get_SubSystem(const _STRING &id);
+		IBootpd *Get_SubSystem(const _STRING &id) override;
 
-		_BOOL Init(const _INT32 &argc, const char *argv[]) override;
+		_BOOL Init(IBootpd *parent, const _INT32 &argc, const char *argv[]) override;
 
 		void Add_Server(const std::vector<_USHORT> &ports) override;
 
