@@ -1,23 +1,23 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "bootpd Debug",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/bootpd",
-            "args": [],
-            "cwd": "${workspaceFolder}/bin/Debug",
-            "environment": [],
-        },
-        {
-            "name": "bootpd Release",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/Release/bootpd",
-            "args": [],
-            "cwd": "${workspaceFolder}/bin/Release",
-            "environment": [],
-        }
-    ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "bootpd Debug",
+			"type": "cppvsdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/bin/Debug/bootpd",
+			"args": [],
+			"cwd": "${workspaceFolder}/bin/Debug",
+			"environment": [],
+		},
+		{
+			"name": "bootpd Release",
+			"type": "cppvsdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/bin/Release/bootpd",
+			"args": [],
+			"cwd": "${workspaceFolder}/bin/Release",
+			"environment": [],
+		}
+	]
 }

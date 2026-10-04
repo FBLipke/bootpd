@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace bootp
 {
 	// Static member - über IBootpd Interface zugänglich
-	__LIBEXPORT std::map<_STRING, std::unique_ptr<IBootpd>> IBootpd::_subSystems;
+	std::map<_STRING, std::unique_ptr<IBootpd>> IBootpd::_subSystems;
 
 	bootpd::bootpd()
 	{

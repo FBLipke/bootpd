@@ -2,107 +2,113 @@
 
 extern "C"
 {
-    __LIBEXPORT bootp::IPlugin *create_plugin()
-    {
-        return new bootp::Plugins::DHCP::DHCPService();
-    }
+	__LIBEXPORT bootp::IPlugin *create_plugin()
+	{
+		return new bootp::Plugins::DHCP::DHCPService();
+	}
 }
 
 namespace bootp::Plugins::DHCP
 {
-    bool DHCPService::Init()
-    {
-        return true;
-    }
+	bool DHCPService::Init()
+	{
+		return true;
+	}
 
-    bool DHCPService::Start()
-    {
-        return true;
-    }
+	bool DHCPService::Start()
+	{
+		return true;
+	}
 
-    void DHCPService::HeartBeat()
-    {
-    }
+	void DHCPService::HeartBeat()
+	{
+	}
 
-    void DHCPService::Close()
-    {
-    }
+	void DHCPService::Close()
+	{
+	}
 
-    bool DHCPService::on_load()
-    {
+	bool DHCPService::on_load()
+	{
 
-        return this->Init();
-    }
+		return this->Init();
+	}
 
-    void DHCPService::on_unload()
-    {
-        this->Close();
-    }
+	void DHCPService::on_unload()
+	{
+		this->Close();
+	}
 
-    void DHCPService::on_install()
-    {
-    }
+	void DHCPService::on_install()
+	{
+	}
 
-    void DHCPService::configure(const tinyxml2::XMLDocument &doc)
-    {
-        auto service = doc.RootElement()->FirstChildElement("Configuration")
-            ->FirstChildElement("Services")->FirstChildElement("Service");
+	void DHCPService::configure(const tinyxml2::XMLDocument &doc)
+	{
+		auto service = doc.RootElement()->FirstChildElement("Configuration")->FirstChildElement("Services")->FirstChildElement("Service");
 
-        while (service)
-        {
-            auto type = std::string(service->Attribute("type"));
+		while (service)
+		{
+			auto type = std::string(service->Attribute("type"));
 
-            if (type.compare(this->name()) == 0)
-            {
-                auto ports = Functions::Split_USHORT(service->Attribute("port"), ';');
-                auto mcaddr = service->Attribute("mcaddr");
-                auto mccport = service->Attribute("mccport");
-                auto mcsport = service->Attribute("mcsport");
-                auto mcstartdelay = service->Attribute("mcstartdelay");
-                auto mctimeout = service->Attribute("mctimeout");
-                auto discovery = service->Attribute("discovery");
-                auto menuetimeout = service->Attribute("menuetimeout");
-                auto menueprompt = service->Attribute("menueprompt");
+			if (type.compare(this->name()) == 0)
+			{
+				auto ports = Functions::Split_USHORT(service->Attribute("port"), ';');
+				auto mcaddr = service->Attribute("mcaddr");
+				auto mccport = service->Attribute("mccport");
+				auto mcsport = service->Attribute("mcsport");
+				auto mcstartdelay = service->Attribute("mcstartdelay");
+				auto mctimeout = service->Attribute("mctimeout");
+				auto discovery = service->Attribute("discovery");
+				auto menuetimeout = service->Attribute("menuetimeout");
+				auto menueprompt = service->Attribute("menueprompt");
 
-                printf("[D] DHCPService: Configured with mcaddr=%s, mccport=%s, mcsport=%s, mcstartdelay=%s, mctimeout=%s, discovery=%s, menuetimeout=%s, menueprompt=%s\n",
-                       mcaddr, mccport, mcsport, mcstartdelay, mctimeout, discovery, menuetimeout, menueprompt);
+				printf("[D] DHCPService: Configured with mcaddr=%s, mccport=%s, mcsport=%s, mcstartdelay=%s, mctimeout=%s, discovery=%s, menuetimeout=%s, menueprompt=%s\n",
+					   mcaddr, mccport, mcsport, mcstartdelay, mctimeout, discovery, menuetimeout, menueprompt);
 
-                if (ports.empty() == false)
-                    bootp::bootpd::Get_SubSystem("ServiceManager")->Add_Server(ports);
-                 break;
-            }
+				if (ports.empty() == false)
+				{
+					auto serverMgr = bootp::bootpd::Get_SubSystem("ServiceManager");
 
-            service = service->NextSiblingElement("Service");
-        }
+					if (serverMgr == nullptr)
+					{
+						printf("[E] serverMgr: Instance is not bound to an Object!\n");
+						break;
+					}
+					serverMgr->Add_Server(ports);
+					break;
+				}
+			}
 
-    }
+			service = service->NextSiblingElement("Service");
+		}
+	}
 
-    void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket,
-                                             const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet)
-    {
-        auto dhcp_packet = std::dynamic_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
-        if (!dhcp_packet)
-        {
-            printf("DHCPService: Received packet is not a DHCP packet.\n");
-            return;
-        }
+	void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket,
+											 const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet)
+	{
+		auto dhcp_packet = std::dynamic_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
+		if (!dhcp_packet)
+		{
+			printf("DHCPService: Received packet is not a DHCP packet.\n");
+			return;
+		}
 
-        auto opcode = dhcp_packet->Get_OPCode();
+		auto opcode = dhcp_packet->Get_OPCode();
 
-        switch (opcode)
-        {
-        case BootpOPCode::BootRequest:
-            printf("DHCPService: Received BootRequest packet.\n");
-            break;
-        case BootpOPCode::BootReply:
-            printf("DHCPService: Received BootReply packet.\n");
-            break;
-        default:
-            printf("DHCPService: Received packet with unknown opcode.\n");
-            break;
-        }
+		switch (opcode)
+		{
+		case BootpOPCode::BootRequest:
+			printf("DHCPService: Received BootRequest packet.\n");
+			break;
+		case BootpOPCode::BootReply:
+			printf("DHCPService: Received BootReply packet.\n");
+			break;
+		default:
+			printf("DHCPService: Received packet with unknown opcode.\n");
+			break;
+		}
 
-        auto hwtype = dhcp_packet->Get_HWType();
-
-    }
+		auto hwtype = dhcp_packet->Get_HWType();
+	}
 }

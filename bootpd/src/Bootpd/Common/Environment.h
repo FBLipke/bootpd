@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #ifdef _WIN32
-#define __LIBEXPORT
+#define __LIBEXPORT __declspec(dllexport)
 #else
 #define __LIBEXPORT __attribute__((visibility("default")))
 #endif
