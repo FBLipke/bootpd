@@ -44,6 +44,11 @@ target_include_directories(bootpd_common PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
+if(WIN32)
+target_link_libraries(bootpd_common PRIVATE PacketLib sqlite3_lib tinyxml2_lib Rpcrt4.lib Ws2_32.lib)
+else()
+target_link_libraries(bootpd_common PRIVATE PacketLib sqlite3_lib tinyxml2_lib pthread)
+endif()
 
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
