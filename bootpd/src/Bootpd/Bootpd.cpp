@@ -33,7 +33,10 @@ namespace bootp
 
 	IBootpd *bootpd::Get_SubSystem(const _STRING &id)
 	{
-		return IBootpd::_subSystems.at(id).get();
+		auto it = IBootpd::_subSystems.find(id);
+		if (it != IBootpd::_subSystems.end())
+			return it->second.get();
+		return nullptr;
 	}
 
 	_BOOL bootpd::Init(const _INT32 &argc, const char *argv[])
