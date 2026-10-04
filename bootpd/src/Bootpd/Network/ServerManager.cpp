@@ -70,12 +70,6 @@ namespace bootp::Network
 
 	_BOOL ServerManager::Start()
 	{
-		for (const auto &s : this->servers)
-		{
-			s.second.get()->Start();
-			s.second.get()->Listen();
-		}
-
 		return true;
 	}
 

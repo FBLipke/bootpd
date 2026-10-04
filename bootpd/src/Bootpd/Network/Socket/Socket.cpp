@@ -10,7 +10,7 @@ namespace bootp
 			int no = 0;
 			int val_length = sizeof(int);
 
-			this->proto = 0;  // UDP: 0 = auto
+			this->proto = IPPROTO_UDP;
 
 			printf("[D] Socket[%s] -> Init(%u)\n",
 				   this->id.c_str(), htons(this->port));
@@ -18,8 +18,7 @@ namespace bootp
 			this->socketType = SOCK_DGRAM;
 
 			this->_sock = socket(af, this->socketType, this->proto);
-			printf("[D] Socket: socket() returned %d, WSA error=%d\n", this->_sock, WSAGetLastError());
-			memset(&this->_local, 0, sizeof this->_local);
+			_ClearBuffer(&this->_local, sizeof(this->_local));
 			this->_local.sin_addr.s_addr = this->address;
 			this->_local.sin_port = this->port;
 			this->_local.sin_family = af;
@@ -34,7 +33,7 @@ namespace bootp
 			auto retval = bind(this->_sock, reinterpret_cast<struct sockaddr *>(&this->_local), sizeof this->_local);
 			if (retval == SOCKET_ERROR)
 			{
-				printf("[E] Failed to bind socket \"%s\" on interfce!\n", this->id.c_str());
+				printf("[E] Failed to bind socket \"%s\" on interfce! (Error: %d)\n", this->id.c_str(), WSAGetLastError());
 				this->Close();
 				return;
 			}
@@ -47,7 +46,6 @@ namespace bootp
 			if (!this->bound)
 				return;
 
-			printf("[D] Socket[%s] -> Listen()\n", this->id.c_str());
 			std::thread t([this]()
 						  { this->ReceiveFrom(this); });
 			t.detach();
@@ -59,6 +57,8 @@ namespace bootp
 			this->port = htons(port);
 			this->address = address;
 			this->bound = false;
+
+			printf("[D] Starting Socket: %s:%ul\n", Functions::__inet_ntoa(this->address, AF_INET).c_str(), htons(this->port));
 		}
 
 		Socket::~Socket()
@@ -74,7 +74,7 @@ namespace bootp
 				char tempBuffer[UINT16_MAX];
 				hostAddrSize = sizeof(sockaddr_in);
 				sockaddr_in _remote;
-				memset(&_remote, 0x00, sizeof(_remote));
+				_ClearBuffer(&_remote, sizeof(_remote));
 
 				auto messageLength = recvfrom(socket->_sock, tempBuffer, sizeof(tempBuffer), 0,
 											  reinterpret_cast<sockaddr *>(&_remote), &hostAddrSize);

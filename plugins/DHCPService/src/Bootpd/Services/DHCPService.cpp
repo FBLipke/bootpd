@@ -60,6 +60,7 @@ namespace bootp::Plugins::DHCP
 				while (std::getline(iss, token, ';'))
 				{
 					ports.push_back(static_cast<_USHORT>(std::stoi(token)));
+					printf("Port: %d\n", std::stoi(token));
 				}
 				auto mcaddr = service->Attribute("mcaddr");
 				auto mccport = service->Attribute("mccport");
