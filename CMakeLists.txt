@@ -24,6 +24,36 @@ target_include_directories(PacketLib PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 )
 
+# ===== Bootpd Common Library (Functions, Filesystem, Database, etc.) =====
+set(COMMON_SOURCES
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Functions.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Filesystem.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/DatabaseConfig.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Environment.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/SQLiteDatabase.cpp
+)
+add_library(bootpd_common STATIC ${COMMON_SOURCES})
+target_include_directories(bootpd_common PUBLIC
+${CMAKE_SOURCE_DIR}/bootpd/src
+${CMAKE_SOURCE_DIR}/thirdparty
+)
+
+# ===== Bootpd Core SHARED Library (main + plugins linken dagegen) =====
+# Get_SubSystem, IBootpd, ServiceManager - für Plugin-Zugriff
+set(CORE_SOURCES
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Bootpd.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
+)
+add_library(bootpd_core SHARED ${CORE_SOURCES})
+target_include_directories(bootpd_core PUBLIC
+${CMAKE_SOURCE_DIR}/bootpd/src
+${CMAKE_SOURCE_DIR}/thirdparty
+)
+target_link_libraries(bootpd_core PRIVATE PacketLib bootpd_common sqlite3_lib tinyxml2_lib)
+if(WIN32)
+target_link_libraries(bootpd_core PRIVATE Ws2_32.lib Rpcrt4.lib)
+endif()
+
 
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
@@ -52,9 +82,9 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE PacketLib bootpd_core sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
 else()
-target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib pthread tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE PacketLib bootpd_core bootpd_common sqlite3_lib pthread tinyxml2_lib)
 endif()
 
 # Build plugins as subdirectory
