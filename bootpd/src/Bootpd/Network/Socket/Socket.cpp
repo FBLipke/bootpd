@@ -10,7 +10,7 @@ namespace bootp
 			int no = 0;
 			int val_length = sizeof(int);
 
-			this->proto = proto;
+			this->proto = 0;  // UDP: 0 = auto
 
 			printf("[D] Socket[%s] -> Init(%u)\n",
 				   this->id.c_str(), htons(this->port));
