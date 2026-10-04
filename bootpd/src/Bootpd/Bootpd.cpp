@@ -18,14 +18,20 @@ namespace bootp
 	// Static member - über IBootpd Interface zugänglich
 	std::map<_STRING, std::unique_ptr<IBootpd>> IBootpd::_subSystems;
 
-	// Global pointer for plugins to access subsystems
-	static bootpd *g_bootpd_instance = nullptr;
+	// Global pointer for plugins to access subsystems - EXPORTED so plugins can access same instance
+	__LIBEXPORT bootpd *g_bootpd_instance = nullptr;
 
 	// Exported function for plugins
 	__LIBEXPORT IBootpd *GetBootpdSubSystem(const _STRING &id)
 	{
+		printf("[D] GetBootpdSubSystem('%s') called - g_bootpd_instance=%p\n", id.c_str(), (void*)g_bootpd_instance);
 		if (g_bootpd_instance)
-			return g_bootpd_instance->Get_SubSystem(id);
+		{
+			auto result = g_bootpd_instance->Get_SubSystem(id);
+			printf("[D] GetBootpdSubSystem('%s') returning %p\n", id.c_str(), (void*)result);
+			return result;
+		}
+		printf("[E] GetBootpdSubSystem - g_bootpd_instance is NULL!\n");
 		return nullptr;
 	}
 
