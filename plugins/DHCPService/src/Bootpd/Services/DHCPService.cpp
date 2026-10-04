@@ -52,16 +52,13 @@ namespace bootp::Plugins::DHCP
 
 			if (type.compare(this->name()) == 0)
 			{
-				// Inline Split_USHORT to avoid MSVC/GCC name mangling issues across DLL boundaries
 				std::vector<_USHORT> ports;
 				std::string port_str = service->Attribute("port");
 				std::string token;
 				std::istringstream iss(port_str);
-				while (std::getline(iss, token, ';'))
-				{
+				while (std::getline(iss, token, SPLITTOKEN))
 					ports.push_back(static_cast<_USHORT>(std::stoi(token)));
-					printf("Port: %d\n", std::stoi(token));
-				}
+
 				auto mcaddr = service->Attribute("mcaddr");
 				auto mccport = service->Attribute("mccport");
 				auto mcsport = service->Attribute("mcsport");
@@ -70,9 +67,6 @@ namespace bootp::Plugins::DHCP
 				auto discovery = service->Attribute("discovery");
 				auto menuetimeout = service->Attribute("menuetimeout");
 				auto menueprompt = service->Attribute("menueprompt");
-
-				printf("[D] DHCPService: Configured with mcaddr=%s, mccport=%s, mcsport=%s, mcstartdelay=%s, mctimeout=%s, discovery=%s, menuetimeout=%s, menueprompt=%s\n",
-					   mcaddr, mccport, mcsport, mcstartdelay, mctimeout, discovery, menuetimeout, menueprompt);
 
 				if (ports.empty() == false)
 				{
@@ -91,7 +85,7 @@ namespace bootp::Plugins::DHCP
 		auto dhcp_packet = std::dynamic_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
 		if (!dhcp_packet)
 		{
-			printf("DHCPService: Received packet is not a DHCP packet.\n");
+			printf("[E] DHCPService: Received packet is not a DHCP packet.\n");
 			return;
 		}
 
@@ -100,13 +94,13 @@ namespace bootp::Plugins::DHCP
 		switch (opcode)
 		{
 		case BootpOPCode::BootRequest:
-			printf("DHCPService: Received BootRequest packet.\n");
+			printf("[D] DHCPService: Received BootRequest packet.\n");
 			break;
 		case BootpOPCode::BootReply:
-			printf("DHCPService: Received BootReply packet.\n");
+			printf("[D] DHCPService: Received BootReply packet.\n");
 			break;
 		default:
-			printf("DHCPService: Received packet with unknown opcode.\n");
+			printf("[D] DHCPService: Received packet with unknown opcode.\n");
 			break;
 		}
 

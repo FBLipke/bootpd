@@ -47,7 +47,9 @@ typedef std::string _STRING;
 typedef bool _BOOL;
 typedef std::thread _THREAD;
 
-#define __MEMSET(o, l) std::memset(o, 0, l);
+#ifndef SPLITTOKEN
+#define SPLITTOKEN ';'
+#endif
 
 constexpr _BOOL IsNull(auto *x) { return x == nullptr; }
 

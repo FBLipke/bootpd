@@ -1,25 +1,49 @@
 {
 	"configurations": [
-		        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/bootpd/src",
-                "${workspaceFolder}/thirdparty",
-                "${workspaceFolder}/plugins/DHCP/src"
-            ],
-            "defines": [
-                "_DEBUG",
-                "__linux__",
-                "UNICODE",
-                "_UNICODE"
-            ],
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c17",
-            "cppStandard": "c++20",
-            "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.cmake-tools"
-        }
+		{
+			"name": "Linux",
+			"includePath": [
+				"${default}",
+				"${workspaceFolder}/*",
+				"${workspaceFolder}/bootpd/src",
+				"${workspaceFolder}/thirdparty",
+				"${workspaceFolder}/plugins/*/src"
+			],
+			"defines": [
+				"_DEBUG",
+				"__linux__",
+				"__GNU__",
+				"UNICODE",
+				"_UNICODE"
+			],
+			"compilerPath": "/usr/bin/gcc",
+			"cStandard": "c17",
+			"cppStandard": "c++20",
+			"intelliSenseMode": "linux-gcc-x64",
+			"configurationProvider": "ms-vscode.cmake-tools"
+		},
+		{
+			"name": "Windows",
+			"includePath": [
+				"${default}",
+				"${workspaceFolder}/**",
+				"${workspaceFolder}/bootpd/src",
+				"${workspaceFolder}/thirdparty",
+				"${workspaceFolder}/plugins/*/src"
+			],
+			"defines": [
+				"_DEBUG",
+				"UNICODE",
+				"_UNICODE",
+				"_WIN32"
+			],
+			"windowsSdkVersion": "10.0.26100.0",
+			"cStandard": "c23",
+			"cppStandard": "c++20",
+			"intelliSenseMode": "windows-msvc-x64",
+			"compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe",
+			"configurationProvider": "ms-vscode.cmake-tools"
+		}
 	],
 	"version": 4
 }
