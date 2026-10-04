@@ -12,11 +12,10 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 
-target_link_libraries(DHCPService PRIVATE PacketLib tinyxml2_lib)
-add_dependencies(DHCPService PacketLib tinyxml2_lib)
-
 if(WIN32)
-target_link_libraries(DHCPService PRIVATE Ws2_32.lib tinyxml2_lib)
+target_link_libraries(DHCPService PRIVATE Ws2_32.lib PacketLib FunctionLib Rpcrt4.lib tinyxml2_lib)
+else()
+target_link_libraries(DHCPService PRIVATE PacketLib FunctionLib tinyxml2_lib)
 endif()
 
 set_target_properties(DHCPService PROPERTIES

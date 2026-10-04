@@ -24,6 +24,14 @@ target_include_directories(PacketLib PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 )
 
+# ===== Functions Static Library (used by main + plugins) =====
+set(FUNCTION_SOURCES
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Functions.cpp
+)
+add_library(FunctionLib STATIC ${FUNCTION_SOURCES})
+target_include_directories(FunctionLib PUBLIC
+${CMAKE_SOURCE_DIR}/bootpd/src
+)
 
 # ===== Source Files =====
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/bootpd/src/*.cpp")
@@ -42,19 +50,28 @@ list(FIND ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Pack
 if(NOT ${_idx} EQUAL -1)
 list(REMOVE_ITEM ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Packet.cpp")
 endif()
+
+# Remove Packet.cpp from main build (it's in PacketLib now)
+list(FIND ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Functions.cpp" _ida)
+if(NOT ${_ida} EQUAL -1)
+list(REMOVE_ITEM ALL_SOURCES "${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Functions.cpp")
+endif()
+
+
+
 add_library(tinyxml2_lib STATIC ${CMAKE_SOURCE_DIR}/thirdparty/tinyxml2/tinyxml2.cpp)
 
 add_executable(bootpd ${ALL_SOURCES})
-set_target_properties(bootpd PROPERTIES LINK_FLAGS "-rdynamic")
+set_target_properties(bootpd PROPERTIES ENABLE_EXPORTS ON LINK_FLAGS "-rdynamic")
 
 target_include_directories(bootpd PRIVATE
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE PacketLib FunctionLib sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
 else()
-target_link_libraries(bootpd PRIVATE PacketLib sqlite3_lib pthread tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE PacketLib FunctionLib sqlite3_lib pthread tinyxml2_lib)
 endif()
 
 # Build plugins as subdirectory
