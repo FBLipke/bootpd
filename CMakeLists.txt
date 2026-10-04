@@ -45,6 +45,8 @@ ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Bootpd.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ServerManager.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ClientManager.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Server/Server.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Client/Client.cpp
 )
 add_library(bootpd_core SHARED ${CORE_SOURCES})
 target_include_directories(bootpd_core PUBLIC
