@@ -39,7 +39,7 @@ ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Server/Server.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Client/Client.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Socket/Socket.cpp
 )
-add_library(bootpd_common STATIC ${COMMON_SOURCES})
+add_library(bootpd_common SHARED ${COMMON_SOURCES})
 target_include_directories(bootpd_common PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
