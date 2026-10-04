@@ -2,7 +2,7 @@
 <Bootpd>
 	<Configuration>
 		<Services>
-			<Service type="DHCPService" port="67;4011" mcaddr="224.0.1.2" mccport="4001"
+			<Service type="DHCPService" port="67;68;4011" mcaddr="224.0.1.2" mccport="4001"
 					 mcsport="69" mcstartdelay="10" mctimeout="30" discovery="0" menuetimeout="10"
 						menueprompt="Select Server...;Press [F8] to boot from Network or [esc] to cancel...">
 				<Bootfiles>

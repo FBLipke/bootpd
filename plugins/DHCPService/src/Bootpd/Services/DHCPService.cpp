@@ -82,7 +82,7 @@ namespace bootp::Plugins::DHCP
 	void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket,
 											 const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet)
 	{
-		auto dhcp_packet = std::dynamic_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
+		auto dhcp_packet = std::reinterpret_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
 		if (!dhcp_packet)
 		{
 			printf("[E] DHCPService: Received packet is not a DHCP packet.\n");
