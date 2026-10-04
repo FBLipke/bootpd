@@ -53,7 +53,14 @@ namespace bootp::Plugins::DHCP
 
 			if (type.compare(this->name()) == 0)
 			{
-				auto ports = SplitUSHORT_Export(service->Attribute("port"), ';');
+				// Inline Split_USHORT to avoid MSVC/GCC name mangling issues across DLL boundaries
+				std::vector<_USHORT> ports;
+				std::string port_str = service->Attribute("port");
+				std::string token;
+				std::istringstream iss(port_str);
+				while (std::getline(iss, token, ';')) {
+					ports.push_back(static_cast<_USHORT>(std::stoi(token)));
+				}
 				auto mcaddr = service->Attribute("mcaddr");
 				auto mccport = service->Attribute("mccport");
 				auto mcsport = service->Attribute("mcsport");
