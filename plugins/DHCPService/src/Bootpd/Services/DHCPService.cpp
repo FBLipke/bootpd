@@ -107,10 +107,13 @@ namespace bootp::Plugins::DHCP
 				Handle_DHCP_Discover(server, socket, client, request);
 				break;
 			case DHCPMessageType::Request:
+				Handle_DHCP_Request(server, socket, client, request);
 				break;
 			case DHCPMessageType::Release:
+				Handle_DHCP_Release(server, socket, client, request);
 				break;
 			case DHCPMessageType::Inform:
+				Handle_DHCP_Inform(server, socket, client, request);
 				break;
 			default:
 				break;
@@ -122,10 +125,13 @@ namespace bootp::Plugins::DHCP
 			switch (request->Get_MessageType())
 			{
 			case DHCPMessageType::Offer:
+				Handle_DHCP_Offer(server, socket, client, request);
 				break;
 			case DHCPMessageType::Ack:
+				Handle_DHCP_Ack(server, socket, client, request);
 				break;
 			case DHCPMessageType::Nak:
+				Handle_DHCP_Nak(server, socket, client, request);
 				break;
 			default:
 				break;
@@ -139,7 +145,38 @@ namespace bootp::Plugins::DHCP
 		auto hwtype = request->Get_HWType();
 	}
 
-	void DHCPService::Handle_DHCP_Discover(const _STRING &server, const _STRING &socket, const _STRING &client, const DHCPPacket &request)
+	void DHCPService::Handle_DHCP_Discover(const _STRING &server, const _STRING &socket, const _STRING &client,
+										   const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Request(const _STRING &server, const _STRING &socket, const _STRING &client,
+										  const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Release(const _STRING &server, const _STRING &socket, const _STRING &client,
+										  const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Inform(const _STRING &server, const _STRING &socket, const _STRING &client,
+										 const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Offer(const _STRING &server, const _STRING &socket, const _STRING &client,
+										const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Ack(const _STRING &server, const _STRING &socket, const _STRING &client,
+									  const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
+	{
+	}
+
+	void DHCPService::Handle_DHCP_Nak(const _STRING &server, const _STRING &socket, const _STRING &client,
+									  const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
 	{
 	}
 }
