@@ -61,7 +61,7 @@ namespace bootp::Plugins::DHCP
 		 * @param request The DHCP packet to evaluate
 		 * @return true if this service should handle the request
 		 */
-		virtual bool CanHandle(const Network::Packet::DHCPPacket &request) const = 0;
+		virtual bool CanHandle(const std::shared_ptr<Network::Packet::DHCPPacket> &request) const = 0;
 
 		/**
 		 * @brief Handle a DHCP Discover request
@@ -72,7 +72,7 @@ namespace bootp::Plugins::DHCP
 		 * @return true if response was sent
 		 */
 		virtual bool OnDiscover(const _STRING &server, const _STRING &socket,
-								const _STRING &client, const Network::Packet::DHCPPacket &request) = 0;
+							   const _STRING &client, const std::shared_ptr<Network::Packet::DHCPPacket> &request) = 0;
 
 		/**
 		 * @brief Handle a DHCP Request (renewal) request
@@ -83,7 +83,7 @@ namespace bootp::Plugins::DHCP
 		 * @return true if response was sent
 		 */
 		virtual bool OnRequest(const _STRING &server, const _STRING &socket,
-							   const _STRING &client, const Network::Packet::DHCPPacket &request) = 0;
+							  const _STRING &client, const std::shared_ptr<Network::Packet::DHCPPacket> &request) = 0;
 
 		/**
 		 * @brief Handle a DHCP Release request
@@ -93,7 +93,7 @@ namespace bootp::Plugins::DHCP
 		 * @param request The DHCP release packet
 		 */
 		virtual void OnRelease(const _STRING &server, const _STRING &socket,
-							   const _STRING &client, const Network::Packet::DHCPPacket &request) = 0;
+							   const _STRING &client, const std::shared_ptr<Network::Packet::DHCPPacket> &request) = 0;
 
 		/**
 		 * @brief Handle a DHCP Inform request
@@ -103,7 +103,7 @@ namespace bootp::Plugins::DHCP
 		 * @param request The DHCP inform packet
 		 */
 		virtual void OnInform(const _STRING &server, const _STRING &socket,
-							  const _STRING &client, const Network::Packet::DHCPPacket &request) = 0;
+							 const _STRING &client, const std::shared_ptr<Network::Packet::DHCPPacket> &request) = 0;
 	};
 
 	/**
@@ -139,7 +139,7 @@ namespace bootp::Plugins::DHCP
 		 * @param request The DHCP packet to evaluate
 		 * @return Pointer to the service, or nullptr if none matches
 		 */
-		IBootService *FindService(const Network::Packet::DHCPPacket &request) const;
+		IBootService *FindService(const std::shared_ptr<Network::Packet::DHCPPacket> &request) const;
 
 		/**
 		 * @brief Get all services for a specific type

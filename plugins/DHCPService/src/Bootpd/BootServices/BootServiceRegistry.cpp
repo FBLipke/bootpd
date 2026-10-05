@@ -27,7 +27,7 @@ namespace bootp::Plugins::DHCP
 		}
 	}
 
-	IBootService *BootServiceRegistry::FindService(const Network::Packet::DHCPPacket &request) const
+	IBootService *BootServiceRegistry::FindService(const std::shared_ptr<Network::Packet::DHCPPacket> &request) const
 	{
 		for (const auto &[type, serviceList] : services)
 		{
