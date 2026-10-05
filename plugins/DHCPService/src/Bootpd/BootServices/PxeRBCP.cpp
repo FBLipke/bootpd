@@ -10,7 +10,7 @@ namespace bootp::Plugins::DHCP::BootServices
 
 	BootServerType PxeRBCP::GetServerType() const
 	{
-		return BootServerType::PXEClient;  // Will be overridden in configure
+		return BootServerType::PXEBootstrapServer;  // Will be overridden in configure
 	}
 
 	_STRING PxeRBCP::GetName() const
@@ -236,7 +236,7 @@ namespace bootp::Plugins::DHCP::BootServices
 			const auto& [hostname, ip] = info;
 			
 			// Skip PXE Bootstrap Server type in menu (it's us!)
-			if (type == BootServerType::PXEClient)
+			if (type == BootServerType::PXEBootstrapServer)
 				continue;
 
 			// Type (2 bytes, little-endian)
@@ -298,7 +298,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		case BootServerType::PXELINUX: return "PXELINUX";
 		case BootServerType::BISConfig: return "BIS";
 		case BootServerType::WDSNBP: return "WDS NBP";
-		case BootServerType::PXEClient: return "PXE Client";
+		case BootServerType::PXEBootstrapServer: return "PXE Client";
 		case BootServerType::HTTPClient: return "HTTP Client";
 		case BootServerType::UEFIHTTPBoot: return "UEFI HTTP Boot";
 		case BootServerType::iSCSI: return "iSCSI";
