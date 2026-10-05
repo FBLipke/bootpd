@@ -52,8 +52,8 @@ namespace bootp
 				pAdapter = pAdapterInfo;
 				while (pAdapter)
 				{
-					address = inet_addr(pAdapter->IpAddressList.IpAddress.String);
-					if (address == inet_addr("127.0.0.1") || address == 0)
+					address = __inet_addr(pAdapter->IpAddressList.IpAddress.String).s_addr;
+					if (address == __inet_addr("127.0.0.1").s_addr || address == 0)
 					{
 						pAdapter = pAdapter->Next;
 						continue;

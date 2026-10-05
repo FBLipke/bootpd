@@ -27,6 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <time.h>
 #include <limits.h>
+#include <signal.h>
+#include <cstdlib>
+
 #pragma once
 
 #ifdef _WIN32
@@ -38,8 +41,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 typedef uint16_t _USHORT;
 typedef int16_t _SHORT;
 typedef unsigned long _ULONG;
-typedef unsigned int _UINT;
-typedef int _INT32;
+typedef uint32_t _UINT;
+typedef int32_t _INT32;
 typedef long _LONG;
 typedef unsigned long long _ULONGLONG;
 typedef uint8_t _BYTE;
@@ -52,10 +55,13 @@ typedef std::thread _THREAD;
 #endif
 
 constexpr _BOOL IsNull(auto *x) { return x == nullptr; }
-
 #ifdef __GNUC__
 #include "environment_linux.h"
 #else
 #include "environment_windows.h"
 #endif
+FILE *__fopen(const _STRING &filename, const char *mode);
+
+_STRING __inet_ntoa(const _IPADDR &ip, const _INT32 &af = 2);
+in_addr __inet_addr(const _STRING &ipstring, const _INT32 &af = 2);
 #endif

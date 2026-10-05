@@ -30,7 +30,7 @@
     "workbench.editor.languageDetection": true,
     "workbench.activityBar.autoHide": true,
     "workbench.preferredDarkColorTheme": "Atom One Light",
-    "workbench.preferredLightColorTheme": "Atom One Light",
+    "workbench.preferredLightColorTheme": "Visual Studio 2017 Dark - C++",
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
@@ -45,5 +45,4 @@
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.showTabs": "multiple",
     "workbench.editor.tabCloseButton": "on"
-
 }

@@ -3,7 +3,6 @@
 #define _ENVIRONMENT_PATH "../../../../bootpd/src/Bootpd/Common/Environment.h"
 #endif
 
-#pragma once
 #ifndef _FUNCTIONS_PATH
 #define _FUNCTIONS_PATH "../../../../bootpd/src/Bootpd/Common/Functions.h"
 #endif
@@ -19,6 +18,3 @@
 #include _ENVIRONMENT_PATH
 #include _IPACKET_PATH
 #include _PACKET_PATH
-
-#include "Defines/DHCPOption.h"
-#include "Network/Packet/DHCPPacket.h"

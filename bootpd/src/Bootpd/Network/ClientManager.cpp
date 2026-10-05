@@ -71,8 +71,12 @@ namespace bootp
 
 		void ClientManager::Close()
 		{
+			printf("[D] ClientMgr: Dropping all Clients...\n");
 			for (const auto &s : this->clients)
+			{
+				printf("[D] ClientManager: Dropping Client[%s]...\n", s.first.c_str());
 				Remove(s.first);
+			}
 
 			this->clients.clear();
 		}

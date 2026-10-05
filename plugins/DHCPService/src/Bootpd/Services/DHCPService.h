@@ -1,6 +1,8 @@
 #pragma once
 #include "../Bootpd.h"
 #include <Bootpd/Services/ServiceManager.h>
+#include "../Defines/DHCPOption.h"
+#include "../Network/Packet/DHCPPacket.h"
 
 namespace bootp::Plugins::DHCP
 {
@@ -27,6 +29,8 @@ namespace bootp::Plugins::DHCP
 
 		void Handle_Service_Request(const _STRING &server, const _STRING &socket,
 									const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) override;
+
+		void Handle_DHCP_Discover(const _STRING server, const _STRING socket, const _STRING client, const DHCPPacket &request);
 
 	private:
 	};

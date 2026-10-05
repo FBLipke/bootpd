@@ -2,35 +2,84 @@
 #include "../Bootpd.h"
 namespace bootp::Plugins::DHCP
 {
-    class DHCPOption
-    {
+	class DHCPOption
+	{
+	public:
+		DHCPOption() : _code(0) {}
+		DHCPOption(_BYTE code) : _code(code) {}
 
-    public:
-        DHCPOption(const _BYTE &opt);
+		DHCPOption(_BYTE code, const std::vector<char> &data)
+			: _code(code), _buffer(data) {}
 
-        DHCPOption(const _BYTE &opt, const _BYTE &data);
+		DHCPOption(_BYTE code, const char *data, _SIZET length)
+			: _code(code)
+		{
+			_buffer.assign(data, data + length);
+		}
 
-        DHCPOption(const _BYTE &opt, const _USHORT &data);
+		// String
+		DHCPOption(_BYTE code, const std::string &str) : _code(code)
+		{
+			_buffer.assign(str.data(), str.data() + str.size());
+		}
 
-        DHCPOption(const _BYTE &opt, const _UINT &data);
+		// Primitive Typen
+		template <typename T>
+		DHCPOption(_BYTE code, T value) : _code(code)
+		{
+			static_assert(std::is_trivially_copyable<T>::value, "T must be trivial");
+			const char *bytes = reinterpret_cast<const char *>(&value);
+			_buffer.assign(bytes, bytes + sizeof(T));
+		}
 
-        DHCPOption(const _BYTE &opt, const _STRING &data);
+		// EXPLICIT Overload für vector<char> - DAS BRAUCHST DU!
+		void AddData(const std::vector<char> &data)
+		{
+			_buffer.insert(_buffer.end(), data.begin(), data.end());
+		}
 
-        ~DHCPOption();
+		// Primitive Typ hinzufügen
+		template <typename T>
+		void AddData(T value)
+		{
+			static_assert(std::is_trivially_copyable<T>::value, "T must be trivial");
+			const char *bytes = reinterpret_cast<const char *>(&value);
+			_buffer.insert(_buffer.end(), bytes, bytes + sizeof(T));
+		}
 
-        const uint8_t &Get_Option() const;
+		// String hinzufügen
+		void AddData(const std::string &str)
+		{
+			_buffer.insert(_buffer.end(), str.begin(), str.end());
+		}
 
-        const uint8_t &Get_Length() const;
+		// Andere DHCPOption hinzufügen
+		void AddData(const DHCPOption &opt)
+		{
+			_buffer.insert(_buffer.end(), opt.GetData().begin(), opt.GetData().end());
+		}
 
-        const char *Get_Data() const;
+		_BYTE GetCode() const { return _code; }
+		std::vector<char> GetData() const { return _buffer; }
+		_SIZET GetLength() const { return _buffer.size(); }
+		const char *GetDataPtr() const { return _buffer.data(); }
 
-        const uint16_t As_Uint16();
+		template <typename T>
+		T GetData() const
+		{
+			static_assert(std::is_trivially_copyable<T>::value, "T must be trivial");
+			T value;
+			std::memcpy(&value, _buffer.data(), sizeof(T));
+			return value;
+		}
 
-        const uint32_t As_Uint32();
+		std::string GetString() const
+		{
+			return std::string(_buffer.data(), _buffer.size());
+		}
 
-    private:
-        uint8_t opt = 0;
-        uint8_t len = 0;
-        char *data;
-    };
-};
+	private:
+		_BYTE _code;
+		std::vector<char> _buffer;
+	};
+}

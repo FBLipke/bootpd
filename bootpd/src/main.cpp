@@ -15,36 +15,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace bootp;
 
+static std::shared_ptr<bootpd> _bootpd;
+volatile sig_atomic_t g_shutdown = false;
+
 void _heartbeat(IBootpd *_instance)
 {
-	auto str = std::string("");
-	while (str != "!exit")
+	while (!g_shutdown)
 	{
 		std::this_thread::sleep_for(
-			std::chrono::milliseconds(30000));
+			std::chrono::milliseconds(3000));
 
 		if (_instance == nullptr)
-			continue;
+			break;
 
 		_instance->HeartBeat();
 	}
 }
 
-int main(const int argc, const char *argv[])
+void handle_signal(_INT32 sig)
 {
-	auto _bootpd = std::make_shared<bootp::bootpd>();
+	printf("[I] Bootpd is shutting down...\n");
+	g_shutdown = true;
+}
 
-	if (!_bootpd.get()->Init(nullptr, argc, argv))
+int main(const _INT32 argc, const char *argv[])
+{
+	signal(SIGINT, handle_signal);
+	signal(SIGTERM, handle_signal);
+
+	_bootpd = std::make_shared<bootp::bootpd>();
+
+	if (!_bootpd->Init(nullptr, argc, argv))
 		return 1;
 
-	if (!_bootpd.get()->Start())
+	if (!_bootpd->Start())
 		return 1;
 
-	std::thread _heartbeatThread(_heartbeat, _bootpd.get());
-
+	_THREAD _heartbeatThread(_heartbeat, _bootpd.get());
 	_heartbeatThread.join();
 
-	_bootpd.get()->Close();
+	_bootpd->Close();
 	_bootpd.reset();
 
 	return 0;

@@ -84,24 +84,6 @@ namespace bootp
 		return tokens;
 	}
 
-	_INT32 Functions::__inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr)
-	{
-		return inet_pton(AF_INET, ip_str.c_str(), addr);
-	}
-	std::string Functions::__inet_ntoa(const _IPADDR &ip, const _INT32 &family)
-	{
-		in_addr addr;
-		_ClearBuffer(&addr, sizeof addr);
-		addr.s_addr = ip;
-
-		char _addr[128];
-		_ClearBuffer(_addr, sizeof _addr);
-
-		inet_ntop(family, &addr, _addr, sizeof _addr);
-
-		return std::string(_addr);
-	}
-
 	_USHORT Functions::AsUSHORT(const char *input)
 	{
 		return static_cast<_USHORT>(strtoul(input, nullptr, 0));

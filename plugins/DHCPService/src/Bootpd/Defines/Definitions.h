@@ -91,4 +91,10 @@ namespace bootp::Plugins::DHCP
 		Aethernet = 257,
 		Reserved_65535 = 65535
 	};
+
+	enum class DHCPFlags
+	{
+		Unicast = 0x0000,
+		Broadcast = 0x8000 // 128
+	};
 }

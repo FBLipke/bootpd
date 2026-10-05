@@ -82,28 +82,62 @@ namespace bootp::Plugins::DHCP
 	void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket,
 											 const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &packet)
 	{
-		auto dhcp_packet = std::reinterpret_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
-		if (!dhcp_packet)
+		auto request = std::reinterpret_pointer_cast<bootp::Plugins::DHCP::Network::Packet::DHCPPacket>(packet);
+		if (!request)
 		{
 			printf("[E] DHCPService: Received packet is not a DHCP packet.\n");
 			return;
 		}
 
-		auto opcode = dhcp_packet->Get_OPCode();
+		if (request->IsRelayedPacket())
+		{
+			printf("[I] Got Relayed Request Packet!\n");
+		}
+
+		auto opcode = request->Get_OPCode();
 
 		switch (opcode)
 		{
 		case BootpOPCode::BootRequest:
 			printf("[D] DHCPService: Received BootRequest packet.\n");
+			switch (request->Get_MessageType())
+			{
+			case DHCPMessageType::Discover:
+				break;
+			case DHCPMessageType::Request:
+				break;
+			case DHCPMessageType::Release:
+				break;
+			case DHCPMessageType::Inform:
+				break;
+			default:
+				break;
+			}
+
 			break;
 		case BootpOPCode::BootReply:
 			printf("[D] DHCPService: Received BootReply packet.\n");
+			switch (request->Get_MessageType())
+			{
+			case DHCPMessageType::Offer:
+				break;
+			case DHCPMessageType::Ack:
+				break;
+			case DHCPMessageType::Nak:
+				break;
+			default:
+				break;
+			}
 			break;
 		default:
 			printf("[D] DHCPService: Received packet with unknown opcode.\n");
 			break;
 		}
 
-		auto hwtype = dhcp_packet->Get_HWType();
+		auto hwtype = request->Get_HWType();
+	}
+
+	void DHCPService::Handle_DHCP_Discover(const _STRING server, const _STRING socket, const _STRING client, const DHCPPacket &request)
+	{
 	}
 }

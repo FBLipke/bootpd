@@ -33,7 +33,7 @@ namespace bootp
 			auto retval = bind(this->_sock, reinterpret_cast<struct sockaddr *>(&this->_local), sizeof this->_local);
 			if (retval == SOCKET_ERROR)
 			{
-				printf("[E] Failed to bind socket \"%s\" on interfce! (Error: %d)\n", this->id.c_str(), WSAGetLastError());
+				printf("[E] Failed to bind socket \"%s\" on interfce!\n", this->id.c_str());
 				this->Close();
 				return;
 			}
@@ -58,16 +58,16 @@ namespace bootp
 			this->address = address;
 			this->bound = false;
 
-			printf("[D] Starting Socket: %s:%ul\n", Functions::__inet_ntoa(this->address, AF_INET).c_str(), htons(this->port));
+			printf("[D] Starting Socket: %s:%ul\n", __inet_ntoa(this->address).c_str(), htons(this->port));
 		}
 
 		Socket::~Socket()
 		{
+			_close(this->_sock);
 		}
 
 		void Socket::ReceiveFrom(const Socket *socket)
 		{
-
 			while (socket->bound)
 			{
 				socklen_t hostAddrSize = 0;

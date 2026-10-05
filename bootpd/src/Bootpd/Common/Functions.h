@@ -22,7 +22,7 @@ namespace bootp
 		static _STRING GenerateUUID();
 		static void __memcpy(void *dst, const void *src, const _SIZET &length);
 
-		static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
+		// static _INT32 __inet_addr(const _INT32 &af, const _STRING &ip_str, void *addr);
 		static std::string __inet_ntoa(const _IPADDR &ip, const _INT32 &family);
 		static _USHORT AsUSHORT(const char *input);
 		static std::string Get_Hostname();
