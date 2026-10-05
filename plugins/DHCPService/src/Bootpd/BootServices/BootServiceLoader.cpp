@@ -129,7 +129,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		{
 			if (dll.handle)
 			{
-				FREE_LIBRARY(dll.handle);
+				(void)FreeLibrary((HMODULE)dll.handle);
 				dll.handle = nullptr;
 			}
 		}
