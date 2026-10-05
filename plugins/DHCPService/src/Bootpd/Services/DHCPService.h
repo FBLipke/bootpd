@@ -31,7 +31,7 @@ namespace bootp::Plugins::DHCP
 		void Handle_Service_Request(const _STRING &server, const _STRING &socket,
 									const _STRING &client, const std::shared_ptr<bootp::Network::IPacket> &request) override;
 
-		void Handle_DHCP_Discover(const _STRING server, const _STRING socket, const _STRING client, const DHCPPacket &request);
+		void Handle_DHCP_Discover(const _STRING server, const _STRING socket, const _STRING client, const bootp::Plugins::DHCP::Network::Packet::DHCPPacket &request);
 
 	private:
 	};
