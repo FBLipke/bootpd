@@ -27,7 +27,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		}
 	}
 
-	IBootService* BootServiceRegistry::FindService(const DHCPPacket& request) const
+	IBootService* BootServiceRegistry::FindService(const Network::Packet::DHCPPacket& request) const
 	{
 		for (const auto& [type, serviceList] : services)
 		{
