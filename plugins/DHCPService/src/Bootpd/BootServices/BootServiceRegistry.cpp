@@ -1,8 +1,8 @@
 #include "IBootService.h"
 
-namespace bootp::Plugins::DHCP::BootServices
+namespace bootp::Plugins::DHCP
 {
-	BootServiceRegistry& BootServiceRegistry::Instance()
+	BootServiceRegistry &BootServiceRegistry::Instance()
 	{
 		static BootServiceRegistry instance;
 		return instance;
@@ -27,11 +27,11 @@ namespace bootp::Plugins::DHCP::BootServices
 		}
 	}
 
-	IBootService* BootServiceRegistry::FindService(const Network::Packet::DHCPPacket& request) const
+	IBootService *BootServiceRegistry::FindService(const Network::Packet::DHCPPacket &request) const
 	{
-		for (const auto& [type, serviceList] : services)
+		for (const auto &[type, serviceList] : services)
 		{
-			for (const auto& service : serviceList)
+			for (const auto &service : serviceList)
 			{
 				if (service->CanHandle(request))
 				{
@@ -42,13 +42,13 @@ namespace bootp::Plugins::DHCP::BootServices
 		return nullptr;
 	}
 
-	std::vector<IBootService*> BootServiceRegistry::GetServices(BootServerType type) const
+	std::vector<IBootService *> BootServiceRegistry::GetServices(BootServerType type) const
 	{
-		std::vector<IBootService*> result;
+		std::vector<IBootService *> result;
 		auto it = services.find(type);
 		if (it != services.end())
 		{
-			for (const auto& svc : it->second)
+			for (const auto &svc : it->second)
 			{
 				result.push_back(svc.get());
 			}
@@ -56,7 +56,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		return result;
 	}
 
-	IBootService* BootServiceRegistry::GetService(BootServerType type, size_t index) const
+	IBootService *BootServiceRegistry::GetService(BootServerType type, size_t index) const
 	{
 		auto it = services.find(type);
 		if (it != services.end() && index < it->second.size())
@@ -66,7 +66,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		return nullptr;
 	}
 
-	const std::map<BootServerType, std::vector<std::unique_ptr<IBootService>>>&
+	const std::map<BootServerType, std::vector<std::unique_ptr<IBootService>>> &
 	BootServiceRegistry::GetAllServices() const
 	{
 		return services;
@@ -80,7 +80,7 @@ namespace bootp::Plugins::DHCP::BootServices
 	size_t BootServiceRegistry::Count() const
 	{
 		size_t total = 0;
-		for (const auto& [type, list] : services)
+		for (const auto &[type, list] : services)
 		{
 			total += list.size();
 		}
