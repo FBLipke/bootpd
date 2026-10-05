@@ -1,5 +1,6 @@
 #pragma once
 #include "../Bootpd.h"
+#include "Definitions.h"
 namespace bootp::Plugins::DHCP
 {
 	class DHCPOption
