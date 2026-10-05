@@ -14,49 +14,59 @@ namespace bootp::Plugins::DHCP::BootServices
 			return false;
 
 		auto type = service->GetServerType();
-		
-		// Check if already registered
-		if (services.find(type) != services.end())
-		{
-			// Replace existing service
-			services[type] = std::move(service);
-		}
-		else
-		{
-			services.emplace(type, std::move(service));
-		}
-
+		services[type].push_back(std::move(service));
 		return true;
 	}
 
 	void BootServiceRegistry::Unregister(BootServerType type)
 	{
-		services.erase(type);
+		auto it = services.find(type);
+		if (it != services.end() && !it->second.empty())
+		{
+			it->second.erase(it->second.begin()); // Remove first registered
+		}
 	}
 
 	IBootService* BootServiceRegistry::FindService(const DHCPPacket& request) const
 	{
-		for (const auto& [type, service] : services)
+		for (const auto& [type, serviceList] : services)
 		{
-			if (service->CanHandle(request))
+			for (const auto& service : serviceList)
 			{
-				return service.get();
+				if (service->CanHandle(request))
+				{
+					return service.get();
+				}
 			}
 		}
 		return nullptr;
 	}
 
-	IBootService* BootServiceRegistry::GetService(BootServerType type) const
+	std::vector<IBootService*> BootServiceRegistry::GetServices(BootServerType type) const
 	{
+		std::vector<IBootService*> result;
 		auto it = services.find(type);
 		if (it != services.end())
 		{
-			return it->second.get();
+			for (const auto& svc : it->second)
+			{
+				result.push_back(svc.get());
+			}
+		}
+		return result;
+	}
+
+	IBootService* BootServiceRegistry::GetService(BootServerType type, size_t index) const
+	{
+		auto it = services.find(type);
+		if (it != services.end() && index < it->second.size())
+		{
+			return it->second[index].get();
 		}
 		return nullptr;
 	}
 
-	const std::map<BootServerType, std::unique_ptr<IBootService>>& 
+	const std::map<BootServerType, std::vector<std::unique_ptr<IBootService>>>&
 	BootServiceRegistry::GetAllServices() const
 	{
 		return services;
@@ -65,5 +75,15 @@ namespace bootp::Plugins::DHCP::BootServices
 	void BootServiceRegistry::Clear()
 	{
 		services.clear();
+	}
+
+	size_t BootServiceRegistry::Count() const
+	{
+		size_t total = 0;
+		for (const auto& [type, list] : services)
+		{
+			total += list.size();
+		}
+		return total;
 	}
 }

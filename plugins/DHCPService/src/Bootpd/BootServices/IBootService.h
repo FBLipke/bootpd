@@ -23,15 +23,15 @@ namespace bootp::Plugins::DHCP::BootServices
 		UEFIApple = 65531,      // behavior="65531" - Apple EFI
 		PXELINUX = 65532,       // behavior="65532" - PXELINUX
 		BISConfig = 65533,      // behavior="65533" - BIS Config
-		WDSNBP = 65534,         // behavior="65534" - WDS Network Bootstrap Program
+		WDSNBP = 65534,        // behavior="65534" - WDS Network Bootstrap Program
 		APITest = 65535,        // behavior="65535" - API Test
 
-		// Custom Types
-		PXEClient = 100,          // DHCP Option 60 PXEClient
-		HTTPClient = 101,        // HTTP/iSCSI Boot Client
-		UEFIHTTPBoot = 102,      // UEFI HTTP Boot
-		iSCSI = 103,             // iSCSI Boot
-		FCoE = 104,              // Fibre Channel over Ethernet
+		// Custom Types (DHCP Option 60 / Vendor Classes)
+		PXEClient = 100,        // DHCP Option 60: "PXEClient"
+		HTTPClient = 101,       // DHCP Option 60: "HTTPClient"
+		UEFIHTTPBoot = 102,     // DHCP Option 60: "UEFI HTTP Boot"
+		iSCSI = 103,            // DHCP Option 60: "iSCSI"
+		FCoE = 104,             // DHCP Option 60: "FCoE"
 	};
 
 	/**
@@ -112,6 +112,9 @@ namespace bootp::Plugins::DHCP::BootServices
 	 * Singleton pattern - manages all IBootService implementations
 	 * and dispatches requests to the appropriate service based on
 	 * CanHandle() evaluation.
+	 * 
+	 * Supports MULTIPLE services per BootServerType (fallback chain)
+	 * matching the Netbootd pattern.
 	 */
 	class BootServiceRegistry
 	{
@@ -126,32 +129,45 @@ namespace bootp::Plugins::DHCP::BootServices
 		bool Register(std::unique_ptr<IBootService> service);
 
 		/**
-		 * @brief Unregister a boot service by type
+		 * @brief Unregister a boot service by type (removes first match)
 		 */
 		void Unregister(BootServerType type);
 
 		/**
 		 * @brief Find the appropriate boot service for a request
+		 * Tries each service in order until CanHandle() returns true
 		 * @param request The DHCP packet to evaluate
 		 * @return Pointer to the service, or nullptr if none matches
 		 */
 		IBootService* FindService(const DHCPPacket& request) const;
 
 		/**
-		 * @brief Get a service by type
+		 * @brief Get all services for a specific type
+		 * @return Vector of services (empty if none registered)
+		 */
+		std::vector<IBootService*> GetServices(BootServerType type) const;
+
+		/**
+		 * @brief Get a service by type and index
 		 * @return Pointer to the service, or nullptr if not found
 		 */
-		IBootService* GetService(BootServerType type) const;
+		IBootService* GetService(BootServerType type, size_t index = 0) const;
 
 		/**
 		 * @brief Get all registered services
 		 */
-		const std::map<BootServerType, std::unique_ptr<IBootService>>& GetAllServices() const;
+		const std::map<BootServerType, std::vector<std::unique_ptr<IBootService>>>& 
+			GetAllServices() const;
 
 		/**
 		 * @brief Clear all registered services
 		 */
 		void Clear();
+
+		/**
+		 * @brief Get count of registered services
+		 */
+		size_t Count() const;
 
 	private:
 		BootServiceRegistry() = default;
@@ -160,7 +176,8 @@ namespace bootp::Plugins::DHCP::BootServices
 		BootServiceRegistry(const BootServiceRegistry&) = delete;
 		BootServiceRegistry& operator=(const BootServiceRegistry&) = delete;
 
-		std::map<BootServerType, std::unique_ptr<IBootService>> services;
+		// Multiple services per type (allows fallback chaining)
+		std::map<BootServerType, std::vector<std::unique_ptr<IBootService>>> services;
 	};
 
 	/**
