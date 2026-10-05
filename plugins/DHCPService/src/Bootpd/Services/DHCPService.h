@@ -3,10 +3,10 @@
 #include <Bootpd/Services/ServiceManager.h>
 #include "../Defines/DHCPOption.h"
 #include "../Defines/Definitions.h"
-#include "../Network/Packet/DHCPPacket.h"
 
 namespace bootp::Plugins::DHCP
 {
+	class DHCPPacket;  // Forward declaration to break circular dependency
 
 	class DHCPService : public IPlugin
 	{

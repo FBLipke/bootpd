@@ -1,4 +1,5 @@
 #include "DHCPService.h"
+#include "../Network/Packet/DHCPPacket.h"
 
 extern "C"
 {
