@@ -4,10 +4,13 @@
 #include "../Defines/DHCPOption.h"
 #include "../Defines/Definitions.h"
 
-namespace bootp::Plugins::DHCP
+namespace bootp::Plugins::DHCP::Network::Packet
 {
 	class DHCPPacket; // Forward declaration to break circular dependency
+}
 
+namespace bootp::Plugins::DHCP
+{
 	class DHCPService : public IPlugin
 	{
 	public:
