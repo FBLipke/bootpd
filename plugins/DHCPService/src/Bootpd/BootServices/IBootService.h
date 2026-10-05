@@ -6,32 +6,27 @@
 namespace bootp::Plugins::DHCP::BootServices
 {
 	/**
-	 * @brief Boot server type enumeration - matches WDS behavior IDs
+	 * @brief Boot server type enumeration - matches Netbootd RFC 4578
 	 */
 	enum class BootServerType : _WORD
 	{
-		None = 0,
-
-		// Standard Boot Server Types (WDS aligned)
-		BIOSBoot = 0,            // behavior="0" - BIOS Boot
-		NTLDR = 1,              // behavior="1" - x86 NTLDR/OSChooser  
-		DOS = 3,                // behavior="3" - DOS
-		BCD = 7,                // behavior="7" - BCD boot
-
-		// Extended Types (WDS aligned)
-		UEFIARM = 65530,        // behavior="65530" - ARM UEFI
-		UEFIApple = 65531,      // behavior="65531" - Apple EFI
-		PXELINUX = 65532,       // behavior="65532" - PXELINUX
-		BISConfig = 65533,      // behavior="65533" - BIS Config
-		WDSNBP = 65534,        // behavior="65534" - WDS Network Bootstrap Program
-		APITest = 65535,        // behavior="65535" - API Test
-
-		// Custom Types (DHCP Option 60 / Vendor Classes)
-		PXEClient = 100,        // DHCP Option 60: "PXEClient"
-		HTTPClient = 101,       // DHCP Option 60: "HTTPClient"
-		UEFIHTTPBoot = 102,     // DHCP Option 60: "UEFI HTTP Boot"
-		iSCSI = 103,            // DHCP Option 60: "iSCSI"
-		FCoE = 104,             // DHCP Option 60: "FCoE"
+		PXEBootstrapServer = 0,   // behavior="0" - Default PXE Bootstrap
+		MicrosoftWindowsNT = 1,    // behavior="1" - RIS/WSUS
+		IntelLCM = 2,            // Intel LCM
+		DOSUNDI = 3,              // behavior="3" - DOS/Undi
+		NECESMPRO = 4,            // NEC ESMPRO
+		IBMWSoD = 5,              // IBM WS-oD
+		IBMLCCM = 6,              // IBM LCCM
+		CAUnicenterTNG = 7,       // CA Unicenter TNG
+		HPOpenView = 8,           // HP OpenView
+		Reserved = 9,             // Reserved
+		Vendor = 32768,           // Vendor-specific (0x8000)
+		AppleLegacy = 0xFFFA,     // Apple Legacy (ushort.MaxValue - 5)
+		AppleBootServer = 0xFFFB, // Apple Boot Server (ushort.MaxValue - 4)
+		LinuxBootServer = 0xFFFC, // Linux Boot Server (ushort.MaxValue - 3)
+		BootIntegrityService = 0xFFFD, // BIS (ushort.MaxValue - 2)
+		WindowsDeploymentServer = 0xFFFE, // WDS (ushort.MaxValue - 1)
+		ApiTest = 0xFFFF,         // API Test (ushort.MaxValue)
 	};
 
 	/**
