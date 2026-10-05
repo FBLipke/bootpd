@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Bootpd.h"
 #include "../../Defines/Definitions.h"
+#include "../../Defines/DHCPOption.h"
 
 namespace bootp::Plugins::DHCP::Network::Packet
 {
