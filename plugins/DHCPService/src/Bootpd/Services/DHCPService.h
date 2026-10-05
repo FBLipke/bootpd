@@ -2,6 +2,7 @@
 #include "../Bootpd.h"
 #include <Bootpd/Services/ServiceManager.h>
 #include "../Defines/DHCPOption.h"
+#include "../Defines/Definitions.h"
 #include "../Network/Packet/DHCPPacket.h"
 
 namespace bootp::Plugins::DHCP
