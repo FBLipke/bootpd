@@ -104,6 +104,7 @@ namespace bootp::Plugins::DHCP
 			switch (request->Get_MessageType())
 			{
 			case DHCPMessageType::Discover:
+				Handle_DHCP_Discover(server, socket, client, request);
 				break;
 			case DHCPMessageType::Request:
 				break;
@@ -138,7 +139,7 @@ namespace bootp::Plugins::DHCP
 		auto hwtype = request->Get_HWType();
 	}
 
-	void DHCPService::Handle_DHCP_Discover(const _STRING server, const _STRING socket, const _STRING client, const DHCPPacket &request)
+	void DHCPService::Handle_DHCP_Discover(const _STRING &server, const _STRING &socket, const _STRING &client, const DHCPPacket &request)
 	{
 	}
 }
