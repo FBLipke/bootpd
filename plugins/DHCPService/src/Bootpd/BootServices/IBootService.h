@@ -8,7 +8,7 @@ namespace bootp::Plugins::DHCP::BootServices
 	/**
 	 * @brief Boot server type enumeration - matches Netbootd RFC 4578
 	 */
-	enum class BootServerType : _WORD
+	enum class BootServerType : _USHORT
 	{
 		PXEBootstrapServer = 0,   // behavior="0" - Default PXE Bootstrap
 		MicrosoftWindowsNT = 1,    // behavior="1" - RIS/WSUS

@@ -30,7 +30,7 @@ namespace bootp::Plugins::DHCP::BootServices
 	 */
 	struct BootServerEntry
 	{
-		_WORD type;           // BootServerType as _WORD
+		_USHORT type;           // BootServerType as _USHORT
 		_BYTE len;           // Length of the following data
 		_BYTE ip_count;       // Number of IP addresses
 		_BYTE ip_addr[4];    // First IP address (IPv4)
@@ -38,7 +38,7 @@ namespace bootp::Plugins::DHCP::BootServices
 
 		BootServerEntry() : type(0), len(0), ip_count(0), ip_addr{0,0,0,0}, hostname() {}
 
-		BootServerEntry(_WORD serverType, const _STRING& host, const _UBYTE* ip)
+		BootServerEntry(_USHORT serverType, const _STRING& host, const _UBYTE* ip)
 			: type(serverType), len(0), ip_count(1), hostname(host)
 		{
 			if (ip) {
@@ -83,12 +83,12 @@ namespace bootp::Plugins::DHCP::BootServices
 	 */
 	struct BootMenuEntry
 	{
-		_WORD type;           // BootServerType
+		_USHORT type;           // BootServerType
 		_BYTE prompt_len;     // Length of prompt string
 		_STRING prompt;      // Display text
 
 		BootMenuEntry() : type(0), prompt_len(0), prompt() {}
-		BootMenuEntry(_WORD serverType, const _STRING& displayText)
+		BootMenuEntry(_USHORT serverType, const _STRING& displayText)
 			: type(serverType), prompt_len(static_cast<_BYTE>(displayText.length() + 1)), prompt(displayText) {}
 
 		std::vector<char> AsBytes() const

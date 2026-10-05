@@ -45,7 +45,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		void SetMulticastDelay(_BYTE seconds);
 		void SetMulticastTimeout(_BYTE seconds);
 		void SetMulticastAddress(const _UBYTE* ip);
-		void SetMulticastPorts(_WORD serverPort, _WORD clientPort);
+		void SetMulticastPorts(_USHORT serverPort, _USHORT clientPort);
 
 		// Register a boot server to show in menu
 		void RegisterBootServer(BootServerType type, const _STRING& hostname, const _UBYTE* ip);
@@ -70,8 +70,8 @@ namespace bootp::Plugins::DHCP::BootServices
 		_BYTE multicastDelay = 4;
 		_BYTE multicastTimeout = 10;
 		_UBYTE multicastAddress[4] = { 224, 0, 1, 2 };  // Default: 224.0.1.2
-		_WORD multicastServerPort = 69;
-		_WORD multicastClientPort = 4001;
+		_USHORT multicastServerPort = 69;
+		_USHORT multicastClientPort = 4001;
 
 		// Registered boot servers for the menu
 		std::map<BootServerType, std::pair<_STRING, _UBYTE[4]>> bootServers;

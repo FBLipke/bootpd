@@ -96,7 +96,7 @@ namespace bootp::Plugins::DHCP::BootServices
 		}
 	}
 
-	void PxeRBCP::SetMulticastPorts(_WORD serverPort, _WORD clientPort)
+	void PxeRBCP::SetMulticastPorts(_USHORT serverPort, _USHORT clientPort)
 	{
 		multicastServerPort = serverPort;
 		multicastClientPort = clientPort;
@@ -186,8 +186,8 @@ namespace bootp::Plugins::DHCP::BootServices
 			const auto& [hostname, ip] = info;
 			
 			// Type (2 bytes, little-endian)
-			serverList.push_back(static_cast<char>(static_cast<_WORD>(type) & 0xFF));
-			serverList.push_back(static_cast<char>((static_cast<_WORD>(type) >> 8) & 0xFF));
+			serverList.push_back(static_cast<char>(static_cast<_USHORT>(type) & 0xFF));
+			serverList.push_back(static_cast<char>((static_cast<_USHORT>(type) >> 8) & 0xFF));
 
 			// Length of this entry
 			_BYTE entryLen = 1 + 4 + static_cast<_BYTE>(hostname.length()) + 1;
@@ -240,8 +240,8 @@ namespace bootp::Plugins::DHCP::BootServices
 				continue;
 
 			// Type (2 bytes, little-endian)
-			menu.push_back(static_cast<char>(static_cast<_WORD>(type) & 0xFF));
-			menu.push_back(static_cast<char>((static_cast<_WORD>(type) >> 8) & 0xFF));
+			menu.push_back(static_cast<char>(static_cast<_USHORT>(type) & 0xFF));
+			menu.push_back(static_cast<char>((static_cast<_USHORT>(type) >> 8) & 0xFF));
 
 			// Build display string: "[hostname] TypeName"
 			std::string displayText = "[" + hostname + "] " + GetServerTypeName(type);
