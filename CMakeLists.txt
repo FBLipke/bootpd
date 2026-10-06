@@ -15,14 +15,25 @@ set(SQLITE_SRC_DIR ${CMAKE_SOURCE_DIR}/thirdparty/sqlite3)
 add_library(sqlite3_lib STATIC ${SQLITE_SRC_DIR}/sqlite3.c)
 set_source_files_properties(${SQLITE_SRC_DIR}/sqlite3.c PROPERTIES LANGUAGE C)
 
-# ===== Packet Static Library (used by main + plugins) =====
-set(PACKET_SOURCES
+# ===== Bootpd Network Library =====
+set(NETWORK_SOURCES
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Packet/Packet.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ServerManager.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ClientManager.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Server/Server.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Client/Client.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Socket/Socket.cpp
 )
-add_library(PacketLib STATIC ${PACKET_SOURCES})
-target_include_directories(PacketLib PUBLIC
+add_library(bootpd_network STATIC ${NETWORK_SOURCES})
+target_include_directories(bootpd_network PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 )
+
+if(WIN32)
+target_link_libraries(bootpd_network PRIVATE Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib)
+else()
+target_link_libraries(bootpd_network PRIVATE)
+endif()
 
 # ===== Bootpd Platform Library =====
 set(PLATFORM_SOURCES
@@ -63,11 +74,7 @@ set(COMMON_SOURCES
 
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Bootpd.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ServerManager.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ClientManager.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Server/Server.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Client/Client.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/Socket/Socket.cpp
+
 )
 add_library(bootpd_common SHARED ${COMMON_SOURCES})
 target_include_directories(bootpd_common PUBLIC
@@ -75,9 +82,9 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database PacketLib tinyxml2_lib Rpcrt4.lib Ws2_32.lib)
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network tinyxml2_lib )
 else()
-target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database PacketLib tinyxml2_lib pthread)
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network tinyxml2_lib pthread)
 endif()
 
 # ===== Source Files =====
@@ -108,9 +115,9 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd PRIVATE PacketLib bootpd_common bootpd_platform sqlite3_lib Ws2_32.lib Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE bootpd_network bootpd_common bootpd_platform bootpd_database tinyxml2_lib)
 else()
-target_link_libraries(bootpd PRIVATE PacketLib bootpd_common bootpd_platform sqlite3_lib pthread tinyxml2_lib)
+target_link_libraries(bootpd PRIVATE bootpd_network bootpd_common bootpd_platform bootpd_database pthread tinyxml2_lib)
 endif()
 
 # Build plugins as subdirectory
