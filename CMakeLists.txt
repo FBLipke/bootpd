@@ -80,6 +80,7 @@ ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
 
 )
 add_library(bootpd_common SHARED ${COMMON_SOURCES})
+add_dependencies(bootpd_common bootpd_plugin_api)
 target_include_directories(bootpd_common PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
