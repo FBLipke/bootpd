@@ -69,6 +69,9 @@ else()
 target_link_libraries(bootpd_database PRIVATE bootpd_platform sqlite3_lib)
 endif()
 
+# ===== Plugin API Library (standalone, no external dependencies) =====
+add_subdirectory(libs/bootpd_plugin_api)
+
 # ===== Bootpd Common Library (Functions, Filesystem, Database, etc.) =====
 set(COMMON_SOURCES
 
@@ -80,11 +83,12 @@ add_library(bootpd_common SHARED ${COMMON_SOURCES})
 target_include_directories(bootpd_common PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
+${CMAKE_SOURCE_DIR}/libs/bootpd_plugin_api/include
 )
 if(WIN32)
-target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network tinyxml2_lib )
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network bootpd_plugin_api tinyxml2_lib )
 else()
-target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network tinyxml2_lib pthread)
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database bootpd_network bootpd_plugin_api tinyxml2_lib pthread)
 endif()
 
 # ===== Source Files =====

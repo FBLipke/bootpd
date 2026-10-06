@@ -10,14 +10,15 @@ add_library(DHCPService SHARED ${PLUGIN_SOURCES})
 target_include_directories(DHCPService PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
+${CMAKE_SOURCE_DIR}/libs/bootpd_plugin_api/include
 )
 
-add_dependencies(DHCPService bootpd_network tinyxml2_lib)
+add_dependencies(DHCPService bootpd_network bootpd_plugin_api tinyxml2_lib)
 
 if(WIN32)
-target_link_libraries(DHCPService PRIVATE Ws2_32.lib bootpd_network bootpd_common Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
+target_link_libraries(DHCPService PRIVATE Ws2_32.lib bootpd_network bootpd_plugin_api Rpcrt4.lib IPHLPAPI.lib tinyxml2_lib)
 else()
-target_link_libraries(DHCPService PRIVATE bootpd_network bootpd_common tinyxml2_lib)
+target_link_libraries(DHCPService PRIVATE bootpd_network bootpd_plugin_api tinyxml2_lib)
 endif()
 
 set_target_properties(DHCPService PROPERTIES
