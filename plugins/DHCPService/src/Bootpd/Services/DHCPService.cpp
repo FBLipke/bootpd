@@ -1,6 +1,7 @@
 #include "DHCPService.h"
 #include "../Network/Packet/DHCPPacket.h"
 #include "../BootServices/IBootService.h"
+#include "../BootServices/BootServiceLoader.h"
 
 extern "C"
 {
