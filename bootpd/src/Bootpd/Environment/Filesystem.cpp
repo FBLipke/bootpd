@@ -15,16 +15,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace bootp
 {
-	std::string Filesystem::__pathSeperatorChar()
+	_STRING Filesystem::__pathSeperatorChar()
 	{
-		std::string slash = "/";
+		_STRING slash = "/";
 #ifdef _WIN32
 		slash = "\\";
 #endif // _WIN32
 		return slash;
 	}
 
-	_SIZET Filesystem::FileLength(const std::string &file)
+	_SIZET Filesystem::FileLength(const _STRING &file)
 	{
 		_SIZET bytes = 0;
 
@@ -42,11 +42,11 @@ namespace bootp
 		return bytes;
 	}
 
-	bool Filesystem::FileExist(const std::string &filename)
+	bool Filesystem::FileExist(const _STRING &filename)
 	{
 		FILE *fil = __fopen(filename, "rb");
 
-		bool res = (fil != nullptr);
+		_BOOL res = (fil != nullptr);
 
 		if (res)
 			res = fclose(fil) == 0;
@@ -54,14 +54,28 @@ namespace bootp
 		return res;
 	}
 
-	bool Filesystem::__has_endingslash(const std::string &p)
+	bool Filesystem::__has_endingslash(const _STRING &p)
 	{
 		return p.find_last_of(Filesystem::__pathSeperatorChar(), p.size()) == p.size();
 	}
 
-	bool Filesystem::__has_startslash(const std::string &p)
+	bool Filesystem::__has_startslash(const _STRING &p)
 	{
 		return p.find_last_of(Filesystem::__pathSeperatorChar(), p.size()) == 0;
+	}
+
+	Filesystem::Filesystem()
+	{
+		this->rootDir = Filesystem::CurrentDirectory();
+	}
+
+	Filesystem::Filesystem(const _STRING &rootDir)
+	{
+		this->rootDir = rootDir;
+	}
+
+	Filesystem::~Filesystem()
+	{
 	}
 
 	_SIZET Filesystem::FileRead(char *dst, _SIZET length, FILE *handle)
@@ -76,7 +90,7 @@ namespace bootp
 		return 0;
 	}
 
-	bool Filesystem::WriteLeaseEntry(const std::string &filename, const std::string &ipaddress, const std::string &mac)
+	bool Filesystem::WriteLeaseEntry(const _STRING &filename, const _STRING &ipaddress, const _STRING &mac)
 	{
 		FILE *fp = __fopen(filename, "wa");
 
@@ -86,7 +100,7 @@ namespace bootp
 		return true;
 	}
 
-	_SIZET Filesystem::FileWrite(const std::string &filename, const char *src, const _SIZET &length)
+	_SIZET Filesystem::FileWrite(const _STRING &filename, const char *src, const _SIZET &length)
 	{
 		_SIZET retval = 0;
 
@@ -101,20 +115,20 @@ namespace bootp
 		return retval;
 	}
 
-	std::string Filesystem::CurrentDirectory()
+	_STRING Filesystem::CurrentDirectory()
 	{
 		char cCurrentPath[MAX_PATH];
 		_ClearBuffer(cCurrentPath, sizeof cCurrentPath);
 
-		_GET_CUR_WORKINGDIR(cCurrentPath, sizeof cCurrentPath);
+		_GET_CUR_WORKINGDIR(cCurrentPath, sizeof(cCurrentPath));
 
-		std::string _path = std::string(cCurrentPath);
+		_STRING _path = _STRING(cCurrentPath);
 		return _path;
 	}
 
-	std::string Filesystem::__replaceSlash(const std::string &p)
+	_STRING Filesystem::__replaceSlash(const _STRING &p)
 	{
-		std::string _path = p;
+		_STRING _path = p;
 
 #ifndef _WIN32
 		_path = Functions::Replace(_path,
@@ -132,7 +146,7 @@ namespace bootp
 		return _path;
 	}
 
-	bool Filesystem::IsDirExist(const std::string &path)
+	bool Filesystem::IsDirExist(const _STRING &path)
 	{
 		struct _STAT info;
 
@@ -142,7 +156,7 @@ namespace bootp
 		return (info.st_mode & S_IFDIR) != 0;
 	}
 
-	bool Filesystem::MakePath(const std::string &path)
+	bool Filesystem::MakePath(const _STRING &path)
 	{
 		_INT32 ret = -1;
 		_SIZET pos = -1;
@@ -159,7 +173,7 @@ namespace bootp
 		{
 		case ENOENT:
 			pos = path.find_last_of(__pathSeperatorChar().c_str());
-			if (pos == std::string::npos)
+			if (pos == _STRING::npos)
 				return false;
 
 			if (!MakePath(path.substr(0, pos)))
@@ -176,10 +190,10 @@ namespace bootp
 		return false;
 	}
 
-	std::string Filesystem::Combine(const std::string &p1, const std::string &p2 = "")
+	_STRING Filesystem::Combine(const _STRING &p1, const _STRING &p2 = "")
 	{
-		std::string _path = p1;
-		std::string _p2 = p2;
+		_STRING _path = p1;
+		_STRING _p2 = p2;
 
 		if (p1.size() == 0)
 			return _p2;

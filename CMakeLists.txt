@@ -27,6 +27,7 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 # ===== Bootpd Platform Library =====
 set(PLATFORM_SOURCES
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Environment/Functions.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Environment/Filesystem.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Environment/Environment.cpp
 )
 add_library(bootpd_platform STATIC ${PLATFORM_SOURCES})
@@ -59,7 +60,7 @@ endif()
 
 # ===== Bootpd Common Library (Functions, Filesystem, Database, etc.) =====
 set(COMMON_SOURCES
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Filesystem.cpp
+
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Bootpd.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ServerManager.cpp
