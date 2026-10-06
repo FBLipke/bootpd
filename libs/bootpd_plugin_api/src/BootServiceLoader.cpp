@@ -81,18 +81,18 @@ namespace bootp::plugins::api
 			return false;
 		}
 
-		auto registerFn = (RegisterBootServiceFn)DLSYM(handle, "RegisterBootService");
+		auto registerFn = (RegisterBootServiceFn)DLSYM((HMODULE)handle, "RegisterBootService");
 		if (!registerFn)
 		{
 			std::cerr << "Failed to find RegisterBootService in: " << path << std::endl;
-			DLCLOSE(handle);
+			DLCLOSE((HMODULE)handle);
 			return false;
 		}
 
 		if (!registerFn())
 		{
 			std::cerr << "RegisterBootService failed in: " << path << std::endl;
-			DLCLOSE(handle);
+			DLCLOSE((HMODULE)handle);
 			return false;
 		}
 
@@ -106,7 +106,7 @@ namespace bootp::plugins::api
 		{
 			if (handle)
 			{
-				DLCLOSE(handle);
+				DLCLOSE((HMODULE)handle);
 			}
 		}
 		GetLoadedHandles().clear();
