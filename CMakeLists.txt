@@ -24,7 +24,7 @@ target_include_directories(PacketLib PUBLIC
 ${CMAKE_SOURCE_DIR}/bootpd/src
 )
 
-# ===== Bootpd Common Library (Functions, Filesystem, Database, etc.) =====
+# ===== Bootpd Platform Library =====
 set(PLATFORM_SOURCES
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Environment/Functions.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Environment/Environment.cpp
@@ -35,16 +35,31 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd_platform PRIVATE PacketLib sqlite3_lib tinyxml2_lib Rpcrt4.lib Ws2_32.lib)
+target_link_libraries(bootpd_platform PRIVATE)
 else()
-target_link_libraries(bootpd_platform PRIVATE PacketLib sqlite3_lib tinyxml2_lib pthread)
+target_link_libraries(bootpd_platform PRIVATE)
+endif()
+
+# ===== Bootpd Database Library =====
+set(DATABASE_SOURCES
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Database/DatabaseConfig.cpp
+${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Database/SQLiteDatabase.cpp
+)
+add_library(bootpd_database STATIC ${DATABASE_SOURCES})
+add_dependencies(bootpd_database bootpd_platform sqlite3_lib)
+target_include_directories(bootpd_database PUBLIC
+${CMAKE_SOURCE_DIR}/bootpd/src
+${CMAKE_SOURCE_DIR}/thirdparty
+)
+if(WIN32)
+target_link_libraries(bootpd_database PRIVATE bootpd_platform sqlite3_lib)
+else()
+target_link_libraries(bootpd_database PRIVATE bootpd_platform sqlite3_lib)
 endif()
 
 # ===== Bootpd Common Library (Functions, Filesystem, Database, etc.) =====
 set(COMMON_SOURCES
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/Filesystem.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/DatabaseConfig.cpp
-${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Common/SQLiteDatabase.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Bootpd.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Services/ServiceManager.cpp
 ${CMAKE_SOURCE_DIR}/bootpd/src/Bootpd/Network/ServerManager.cpp
@@ -59,9 +74,9 @@ ${CMAKE_SOURCE_DIR}/bootpd/src
 ${CMAKE_SOURCE_DIR}/thirdparty
 )
 if(WIN32)
-target_link_libraries(bootpd_common PRIVATE bootpd_platform PacketLib sqlite3_lib tinyxml2_lib Rpcrt4.lib Ws2_32.lib)
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database PacketLib tinyxml2_lib Rpcrt4.lib Ws2_32.lib)
 else()
-target_link_libraries(bootpd_common PRIVATE bootpd_platform PacketLib sqlite3_lib tinyxml2_lib pthread)
+target_link_libraries(bootpd_common PRIVATE bootpd_platform bootpd_database PacketLib tinyxml2_lib pthread)
 endif()
 
 # ===== Source Files =====

@@ -13,7 +13,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "IDatabase.h"
+#include "Interface/IDatabase.h"
 #include "sqlite3/sqlite3.h"
 
 namespace bootp

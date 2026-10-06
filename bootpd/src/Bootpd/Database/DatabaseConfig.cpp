@@ -12,7 +12,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "DatabaseConfig.h"
-#include "IDatabase.h"
+#include "Interface/IDatabase.h"
 #include "SQLiteDatabase.h"
 
 namespace bootp
