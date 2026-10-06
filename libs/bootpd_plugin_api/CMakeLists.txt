@@ -10,8 +10,8 @@ set(PLUGIN_API_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/BootServiceLoader.cpp
 )
 
-# Create the shared library
-add_library(${PROJECT_NAME} SHARED ${PLUGIN_API_SOURCES})
+# Create the static library (for compile-time linking)
+add_library(${PROJECT_NAME} STATIC ${PLUGIN_API_SOURCES})
 
 # Include directories (public for plugins)
 target_include_directories(${PROJECT_NAME} PUBLIC
