@@ -1,10 +1,6 @@
 #pragma once
 #ifndef _ENVIRONMENT_PATH
-#define _ENVIRONMENT_PATH "../../../../bootpd/src/Bootpd/Common/Environment.h"
-#endif
-
-#ifndef _FUNCTIONS_PATH
-#define _FUNCTIONS_PATH "../../../../bootpd/src/Bootpd/Common/Functions.h"
+#define _ENVIRONMENT_PATH "../../../../bootpd/src/Bootpd/Environment/Environment.h"
 #endif
 
 #ifndef _IPACKET_PATH

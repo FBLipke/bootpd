@@ -30,8 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <signal.h>
 #include <cstdlib>
 
-#pragma once
-
 #ifdef _WIN32
 #define __LIBEXPORT __declspec(dllexport)
 #else
@@ -65,3 +63,5 @@ FILE *__fopen(const _STRING &filename, const char *mode);
 _STRING __inet_ntoa(const _IPADDR &ip, const _INT32 &af = 2);
 in_addr __inet_addr(const _STRING &ipstring, const _INT32 &af = 2);
 #endif
+
+#include "Functions.h"

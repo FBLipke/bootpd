@@ -1,7 +1,5 @@
 #include "DHCPService.h"
 #include "../Network/Packet/DHCPPacket.h"
-#include "../BootServices/IBootService.h"
-#include "../BootServices/BootServiceLoader.h"
 
 extern "C"
 {
@@ -80,8 +78,6 @@ namespace bootp::Plugins::DHCP
 
 			service = service->NextSiblingElement("Service");
 		}
-
-		BootServiceLoader::LoadFromDirectory("plugins/DHCPServices/");
 	}
 
 	void DHCPService::Handle_Service_Request(const _STRING &server, const _STRING &socket,
@@ -152,12 +148,6 @@ namespace bootp::Plugins::DHCP
 	void DHCPService::Handle_DHCP_Discover(const _STRING &server, const _STRING &socket, const _STRING &client,
 										   const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
 	{
-		// Find passenden BootService
-		auto service = BootServiceRegistry::Instance().FindService(request);
-		if (service)
-		{
-			service->OnDiscover(server, socket, client, request);
-		}
 	}
 
 	void DHCPService::Handle_DHCP_Request(const _STRING &server, const _STRING &socket, const _STRING &client,

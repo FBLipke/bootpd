@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace bootp
 {
 	// Exported wrapper for plugins - static class members can't cross DLL boundaries on Windows
-	std::vector<_USHORT> SplitUSHORT_Export(const std::string &s, char delimiter)
+	std::vector<_USHORT> SplitUSHORT_Export(const _STRING &s, char delimiter)
 	{
 		return Functions::Split_USHORT(s, delimiter);
 	}
@@ -69,10 +69,10 @@ namespace bootp
 				  static_cast<char *>(dst));
 	}
 
-	std::vector<_USHORT> Functions::Split_USHORT(const std::string &s, char delimiter)
+	std::vector<_USHORT> Functions::Split_USHORT(const _STRING &s, char delimiter)
 	{
 		std::vector<_USHORT> tokens;
-		std::string token;
+		_STRING token;
 		std::istringstream iss(s);
 
 		while (std::getline(iss, token, delimiter))
@@ -89,20 +89,20 @@ namespace bootp
 		return static_cast<_USHORT>(strtoul(input, nullptr, 0));
 	}
 
-	std::string Functions::Get_Hostname()
+	_STRING Functions::Get_Hostname()
 	{
 		char hname[64];
 		_ClearBuffer(hname, sizeof hname);
 		gethostname(hname, sizeof hname);
 
-		return std::string(hname);
+		return _STRING(hname);
 	}
 
-	std::string Functions::MacAsString(char *macBuffer)
+	_STRING Functions::MacAsString(char *macBuffer)
 	{
 		char out[32];
 		_ClearBuffer(out, sizeof out);
-		std::string mac = std::string("");
+		_STRING mac = _STRING("");
 
 		sprintf(out, "%02X:%02X:%02X:%02X:%02X:%02X",
 				static_cast<_BYTE>(macBuffer[0]),
@@ -112,7 +112,7 @@ namespace bootp
 				static_cast<_BYTE>(macBuffer[4]),
 				static_cast<_BYTE>(macBuffer[5]));
 
-		mac = std::string(out);
+		mac = _STRING(out);
 
 		return mac;
 	}
@@ -122,14 +122,14 @@ namespace bootp
 		return static_cast<_INT32>(round(value + 0.5));
 	}
 
-	std::vector<std::string> Functions::Split(const std::string &str, const std::string &token)
+	std::vector<_STRING> Functions::Split(const _STRING &str, const _STRING &token)
 	{
-		std::vector<std::string> output;
-		std::string::size_type prev_pos = 0, pos = 0;
+		std::vector<_STRING> output;
+		_STRING::size_type prev_pos = 0, pos = 0;
 
-		while ((pos = str.find(token, pos)) != std::string::npos)
+		while ((pos = str.find(token, pos)) != _STRING::npos)
 		{
-			std::string substring(str.substr(prev_pos, pos - prev_pos));
+			_STRING substring(str.substr(prev_pos, pos - prev_pos));
 			output.push_back(substring);
 			prev_pos = ++pos;
 		}
@@ -144,15 +144,15 @@ namespace bootp
 		return memcmp(p1, p2, length) == 0;
 	}
 
-	std::string Functions::Replace(std::string &str, const std::string &from, const std::string &to)
+	_STRING Functions::Replace(_STRING &str, const _STRING &from, const _STRING &to)
 	{
 		_SIZET start_pos = str.find(from);
 
-		while (str.find(from) != std::string::npos)
+		while (str.find(from) != _STRING::npos)
 		{
 			start_pos = str.find(from);
 
-			if (start_pos != std::string::npos)
+			if (start_pos != _STRING::npos)
 				str = str.replace(start_pos, from.length(), to);
 		}
 
@@ -164,7 +164,7 @@ namespace bootp
 		return memcmp(&ip1, &ip2, length) == 0;
 	}
 
-	std::string Functions::AsString(const _SIZET &input)
+	_STRING Functions::AsString(const _SIZET &input)
 	{
 		std::stringstream ss;
 		ss << input;
