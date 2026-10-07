@@ -29,37 +29,11 @@ namespace bootp
 			_BOOL connect(const _STRING &path) override;
 			void close() override;
 
-			_BOOL save_client(const Client &client) override;
-			_BOOL update_client(const Client &client) override;
-			Client *find_client_by_mac(const _STRING &mac) override;
-			Client *find_client_by_ip(const _STRING &ip) override;
-			std::vector<Client> get_all_clients() override;
-			std::vector<Client> get_expired_leases() override;
-			_BOOL delete_client(_INT32 id) override;
-			_BOOL delete_expired_leases() override;
-
-			// Client options
-			_BOOL set_client_option(_INT32 client_id, _INT32 option_code, const _STRING &value) override;
-			_BOOL delete_client_option(_INT32 client_id, _INT32 option_code) override;
-			_BOOL delete_all_client_options(_INT32 client_id) override;
-			std::vector<ClientOption> get_client_options(_INT32 client_id) override;
-			std::map<_INT32, _STRING> get_client_options_map(_INT32 client_id) override;
-
-			// Client keys
-			_BOOL add_client_key(const ClientKey &key) override;
-			_BOOL delete_client_key(_INT32 key_id) override;
-			_BOOL delete_all_client_keys(_INT32 client_id) override;
-			std::vector<ClientKey> get_client_keys(_INT32 client_id) override;
-			ClientKey *get_client_key_by_fingerprint(const _STRING &fingerprint) override;
-
 		private:
 			sqlite3 *db;
 			_STRING db_path;
 
 			_BOOL execute(const _STRING &sql);
-			Client *parse_client(sqlite3_stmt *stmt);
-			ClientOption *parse_client_option(sqlite3_stmt *stmt);
-			ClientKey *parse_client_key(sqlite3_stmt *stmt);
 		};
 
 		// Factory implementation
