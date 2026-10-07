@@ -3,7 +3,7 @@
 	"configurations": [
 		{
 			"name": "bootpd Debug",
-			"type": "cppvsdbg",
+			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/bin/Debug/bootpd",
 			"args": [],
@@ -12,7 +12,7 @@
 		},
 		{
 			"name": "bootpd Release",
-			"type": "cppvsdbg",
+			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/bin/Release/bootpd",
 			"args": [],
