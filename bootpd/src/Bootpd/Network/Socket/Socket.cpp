@@ -23,8 +23,8 @@ namespace bootp
 			this->_local.sin_port = this->port;
 			this->_local.sin_family = af;
 
-			auto retval = setsockopt(this->_sock, SOL_SOCKET, SO_BROADCAST, (char *)&yes, val_length);
-			// retval = setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, val_length);
+			auto retval = setsockopt(this->_sock, SOL_SOCKET, SO_BROADCAST, (char *)&yes, sizeof(yes));
+			retval = setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof(yes));
 		}
 
 		void Socket::Start()
