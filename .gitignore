@@ -13,3 +13,4 @@ Debug/
 *.out
 *.a
 *.pem
+.vscode/launch.json
