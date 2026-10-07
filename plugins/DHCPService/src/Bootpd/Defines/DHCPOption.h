@@ -70,13 +70,13 @@ namespace bootp::Plugins::DHCP
 		{
 			static_assert(std::is_trivially_copyable<T>::value, "T must be trivial");
 			T value;
-			std::memcpy(&value, _buffer.data(), sizeof(T));
+			memcpy(&value, _buffer.data(), sizeof(T));
 			return value;
 		}
 
-		std::string GetString() const
+		_STRING GetString() const
 		{
-			return std::string(_buffer.data(), _buffer.size());
+			return _STRING(_buffer.data(), _buffer.size());
 		}
 
 	private:
