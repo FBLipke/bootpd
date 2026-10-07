@@ -4,8 +4,8 @@
 #ifdef _WIN32
 	#include <windows.h>
 	#define DLOPEN(path) LoadLibraryA(path)
-	#define DLSYM(handle, sym) GetProcAddress(handle, sym)
-	#define DLCLOSE(handle) FreeLibrary(handle)
+	#define DLSYM(handle, sym) GetProcAddress((HMODULE)handle, sym)
+	#define DLCLOSE(handle) FreeLibrary((HMODULE)handle)
 	#define DLERROR() std::to_string(GetLastError())
 #else
 	#include <dlfcn.h>
@@ -81,18 +81,18 @@ namespace bootp::plugins::api
 			return false;
 		}
 
-		auto registerFn = (RegisterBootServiceFn)DLSYM((HMODULE)handle, "RegisterBootService");
+		auto registerFn = (RegisterBootServiceFn)DLSYM(handle, "RegisterBootService");
 		if (!registerFn)
 		{
 			std::cerr << "Failed to find RegisterBootService in: " << path << std::endl;
-			DLCLOSE((HMODULE)handle);
+			DLCLOSE(handle);
 			return false;
 		}
 
 		if (!registerFn())
 		{
 			std::cerr << "RegisterBootService failed in: " << path << std::endl;
-			DLCLOSE((HMODULE)handle);
+			DLCLOSE(handle);
 			return false;
 		}
 
@@ -106,7 +106,7 @@ namespace bootp::plugins::api
 		{
 			if (handle)
 			{
-				DLCLOSE((HMODULE)handle);
+				DLCLOSE(handle);
 			}
 		}
 		GetLoadedHandles().clear();
