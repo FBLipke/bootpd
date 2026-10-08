@@ -148,6 +148,7 @@ namespace bootp::Plugins::DHCP
 	void DHCPService::Handle_DHCP_Discover(const _STRING &server, const _STRING &socket, const _STRING &client,
 										   const std::shared_ptr<bootp::Plugins::DHCP::Network::Packet::DHCPPacket> &request)
 	{
+		printf("[I] DHCPService: Handling DHCP Discover packet.\n");
 	}
 
 	void DHCPService::Handle_DHCP_Request(const _STRING &server, const _STRING &socket, const _STRING &client,

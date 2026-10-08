@@ -82,11 +82,14 @@ namespace bootp
 		serverMgr->Handle_Manager_Request =
 			[clientMgr, serviceMgr](const _STRING &server_id, const _STRING &socket_id, const std::shared_ptr<bootp::Network::IPacket> &request, const _IPADDR &ip, const _USHORT &port, const _STRING &id)
 		{
+			printf("[D] Handover - ServerManager.Handle_Manager_Request -> ServiceManager.Handle_Manager_Request\n");
 			if (clientMgr->Add)
 			{
 				_STRING clientId = clientMgr->Add(id, ip, port);
+
 				if (serviceMgr->Handle_Manager_Request)
 				{
+
 					serviceMgr->Handle_Manager_Request(server_id, socket_id, request, ip, port, id);
 				}
 			}

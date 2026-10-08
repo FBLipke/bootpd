@@ -23,13 +23,15 @@ namespace bootp
 			this->_local.sin_port = this->port;
 			this->_local.sin_family = af;
 
-			auto retval = setsockopt(this->_sock, SOL_SOCKET, SO_BROADCAST, (char *)&yes, sizeof(yes));
-			retval = setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, (char *)&yes, sizeof(yes));
+			auto retval = setsockopt(this->_sock, SOL_SOCKET, SO_BROADCAST, reinterpret_cast <char *>(&yes), sizeof(yes));
+			retval = setsockopt(this->_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast <char *>(&yes), sizeof(yes));
+			setsockopt(this->_sock, SOL_SOCKET, SO_REUSEPORT, reinterpret_cast <char *>(&yes), sizeof(yes));
+
+
 		}
 
 		void Socket::Start()
 		{
-			printf("[D] Socket[%s] -> Start()\n", this->id.c_str());
 			auto retval = bind(this->_sock, reinterpret_cast<struct sockaddr *>(&this->_local), sizeof this->_local);
 			if (retval == SOCKET_ERROR)
 			{
@@ -38,6 +40,7 @@ namespace bootp
 				return;
 			}
 
+			printf("[I] Starting Socket: %s:%ul\n", __inet_ntoa(this->address).c_str(), htons(this->port));
 			this->bound = true;
 		}
 
@@ -46,6 +49,7 @@ namespace bootp
 			if (!this->bound)
 				return;
 
+			printf("[I] Listening Socket: %s:%ul\n", __inet_ntoa(this->address).c_str(), htons(this->port));
 			std::thread t([this]()
 						  { this->ReceiveFrom(this); });
 			t.detach();
@@ -57,13 +61,11 @@ namespace bootp
 			this->port = htons(port);
 			this->address = address;
 			this->bound = false;
-
-			printf("[D] Starting Socket: %s:%ul\n", __inet_ntoa(this->address).c_str(), htons(this->port));
 		}
 
 		Socket::~Socket()
 		{
-			_close(this->_sock);
+			this->Close();
 		}
 
 		void Socket::ReceiveFrom(const Socket *socket)
@@ -90,7 +92,10 @@ namespace bootp
 				_USHORT _port = ntohs(_remote.sin_port);
 				_STRING _client = Functions::GenerateUUID();
 				if (socket->SocketDataReceived)
+				{
 					socket->SocketDataReceived(this->id, request, _ip, _port, _client);
+					printf("[D] Socket[%s] -> Data from %s:%u\n", this->id.c_str(), __inet_ntoa(_ip).c_str(), _port);
+				}
 			}
 		}
 
